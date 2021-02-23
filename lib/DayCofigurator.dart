@@ -57,6 +57,7 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
                         ],
                       ),
                     ),
+                  
                   SizedBox(height: 10),
                   if (!goal.hasDescription)
                     FlatButton(
