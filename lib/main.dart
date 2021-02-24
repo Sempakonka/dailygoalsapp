@@ -2,6 +2,7 @@ import 'package:dailygoals_app/DataTypes/Day.dart';
 import 'package:dailygoals_app/DataTypes/Goal.dart';
 import 'package:dailygoals_app/DayCofigurator.dart';
 import 'package:dailygoals_app/GoalConfigurator.dart';
+import 'package:dailygoals_app/Reflect.dart';
 import 'package:dailygoals_app/Utils.dart';
 import 'package:dailygoals_app/globals.dart' as globals;
 import 'package:flutter/cupertino.dart';
@@ -14,10 +15,11 @@ void main() => runApp(
         routes: {
           '/': (context) => HomePage(),
           '/dayConfigurator': (context) => DayConfiguratorPage(),
-          '/goalConfigurator': (context) => GoalConfigurator()
+          '/goalConfigurator': (context) => GoalConfigurator(),
+          Reflect.routeName: (context) => Reflect()
         },
         theme: ThemeData(
-          primaryColor: Color.fromARGB(255, 12, 21, 29),
+          primaryColor: Color.fromARGB(255, 0, 71, 119),
         ),
       ),
     );
@@ -43,10 +45,18 @@ class _HomePageState extends State<HomePage> {
     });
     return Scaffold(
       body: ScrollablePositionedList.builder(
-          itemScrollController: _scrollController,
-          itemCount: 60,
-          itemBuilder: (BuildContext context, index) =>
-              buildGoalsList(context, previousMonth, index)),
+        itemScrollController: _scrollController,
+        itemCount: 60,
+        itemBuilder: (BuildContext context, index) =>
+            buildGoalsList(context, previousMonth, index),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: globals.buttonColor,
+        label: Text("Reflect"),
+        onPressed: (){
+          Navigator.pushNamed(context, Reflect.routeName);
+        },
+      ),
     );
   }
 
@@ -59,13 +69,10 @@ class _HomePageState extends State<HomePage> {
     String curr = getCurrentDay().toString();
     print("$curr and $onClickDate");
 
-
     /// The Whole Card
     return new SizedBox(
       child: Column(
         children: [
-
-
           /// The Line At the current day card
           onClickDate == getCurrentDay()
               ? Padding(
@@ -80,7 +87,6 @@ class _HomePageState extends State<HomePage> {
                 )
               : Container(),
 
-
           /// The info text above the card at the beginning of every week
           onClickDate.weekday == 1
               ? Padding(
@@ -93,12 +99,9 @@ class _HomePageState extends State<HomePage> {
                 )
               : Container(),
 
-
           /// The row containing the left section of the card and the card itself.
           Row(
             children: [
-
-
               /// The left section
               SizedBox(
                 width: 60,
@@ -110,8 +113,6 @@ class _HomePageState extends State<HomePage> {
                       padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                       child: Column(
                         children: [
-
-
                           /// The info text that marks which day today is
                           onClickDate == getCurrentDay()
                               ? Padding(
@@ -126,7 +127,6 @@ class _HomePageState extends State<HomePage> {
                                 )
                               : Container(),
 
-
                           /// The info text at the left section where every week begins
                           onClickDate.weekday == 1
                               ? Text(
@@ -135,7 +135,6 @@ class _HomePageState extends State<HomePage> {
                                   style: TextStyle(color: Colors.grey),
                                 )
                               : Container(),
-
 
                           /// the circle around the week number if the week is equal to this week
                           onClickDate.weekday == 1
@@ -176,13 +175,9 @@ class _HomePageState extends State<HomePage> {
                 }(),
               ),
 
-
-
               /// the card itself (at the right)
               Expanded(
                 child: Container(
-
-
                   ///decorations
                   margin:
                       EdgeInsets.only(left: 5, top: 0, right: 14, bottom: 12),
@@ -202,10 +197,9 @@ class _HomePageState extends State<HomePage> {
                         )
                       ]),
 
-
-                    /// the list tile with the onclick and the title and subtitle
+                  /// the list tile with the onclick and the title and subtitle
                   child: ListTile(
-                               onTap: () {
+                    onTap: () {
                       if (globals.activatedDays[onClickDate] == null) {
                         List<GoalObject> test = new List<GoalObject>();
                         globals.activatedDays.putIfAbsent(onClickDate,
@@ -215,7 +209,6 @@ class _HomePageState extends State<HomePage> {
                           context, DayConfiguratorPage.routeName,
                           arguments: onClickDate);
                     },
-
                     title: Text(
                       () {
                         String date = Jiffy(onClickDate).format("EEEE MMM do");
