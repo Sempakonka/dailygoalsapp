@@ -4,6 +4,8 @@ import 'package:dailygoals_app/Utils.dart';
 import 'package:dailygoals_app/globals.dart' as globals;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:jiffy/jiffy.dart';
+
 
 class DayConfiguratorPage extends StatefulWidget {
   static const routeName = '/dayConfigurator';
@@ -16,9 +18,9 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
   TextEditingController dayDescriptionController = TextEditingController();
 
 
-
   createGoalConfigDialog(BuildContext context, GoalObject goal, int index,
       bool enableEmptyCheckText, bool isNew, _selectedDay) {
+    String goalNumber = isNew? (globals.activatedDays[_selectedDay].goals.length + 1).toString() : (globals.activatedDays[_selectedDay].goals.indexOf(goal) + 1).toString();
     return showDialog(
         context: context,
         builder: (context) {
@@ -26,7 +28,7 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(10.0))),
             title: Text(
-              "goal number 'number'",
+              "goal number $goalNumber",
               style: Theme.of(context).textTheme.headline5,
             ),
             content: Container(
@@ -67,7 +69,7 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
                           borderRadius: BorderRadius.circular(22.0),
                         ),
                         child: Text(
-                          "Use Description",
+                          "Also use Description",
                           style: TextStyle(
                               fontSize: 12,
                               color: Theme.of(context).backgroundColor,
@@ -176,6 +178,8 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
   @override
   Widget build(BuildContext context) {
     final DateTime _selectedDay = ModalRoute.of(context).settings.arguments;
+    final String _selectedDayReadable = Jiffy(_selectedDay).format("EEEE MMM do");
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -194,7 +198,7 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
             Container(
               padding: EdgeInsets.fromLTRB(15, 5.0, 0, 15),
               child: Text(
-                "Your goals for today",
+              _selectedDay == getCurrentDay() ?  "Your goals for today" : "Your goals for $_selectedDayReadable",
                 style: TextStyle(
                     color: Theme.of(context).primaryColor,
                     fontSize: Theme.of(context).textTheme.headline4.fontSize,
@@ -230,6 +234,7 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
         },
       ),
     );
+
   }
 
   Widget buildGoalsList(BuildContext context, int index, DateTime _selectedDay) {
