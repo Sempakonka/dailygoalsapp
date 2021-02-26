@@ -1,5 +1,7 @@
 import 'package:dailygoals_app/globals.dart' as globals;
+import 'package:dailygoals_app/reflectDay.dart';
 import 'package:flutter/material.dart';
+import 'package:dailygoals_app/Utils.dart' as utils;
 
 class Reflect extends StatefulWidget {
   static const routeName = '/Reflect';
@@ -46,7 +48,9 @@ class _ReflectState extends State<Reflect> {
                       color: Colors.white,
                       fontWeight: FontWeight.w400),
                 ),
-                onPressed: () {}),
+                onPressed: () {
+                  Navigator.pushNamed(context, reflectDay.routeName, arguments: utils.getCurrentDay());
+                }),
             RaisedButton(
                 color: globals.buttonColor,
                 shape: RoundedRectangleBorder(
@@ -59,7 +63,9 @@ class _ReflectState extends State<Reflect> {
                       color: Colors.white,
                       fontWeight: FontWeight.w400),
                 ),
-                onPressed: () {}),
+                onPressed: () {
+                  Navigator.pushNamed(context, reflectDay.routeName, arguments: new DateTime(utils.getCurrentDay().year, utils.getCurrentDay().month, utils.getCurrentDay().day - 1));
+                }),
             RaisedButton(
                 color: globals.buttonColor,
                 shape: RoundedRectangleBorder(
@@ -72,7 +78,9 @@ class _ReflectState extends State<Reflect> {
                       color: Colors.white,
                       fontWeight: FontWeight.w400),
                 ),
-                onPressed: () {})
+                onPressed: () {
+                  Navigator.pushNamed(context, '/', arguments: true);
+                })
           ],
         ),
       ),

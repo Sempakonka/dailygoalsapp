@@ -4,6 +4,7 @@ import 'package:dailygoals_app/DayCofigurator.dart';
 import 'package:dailygoals_app/Reflect.dart';
 import 'package:dailygoals_app/Utils.dart';
 import 'package:dailygoals_app/globals.dart' as globals;
+import 'package:dailygoals_app/reflectDay.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -16,10 +17,11 @@ void main() => runApp(
           '/': (context) => HomePage(),
           '/dayConfigurator': (context) => DayConfiguratorPage(),
           //  '/goalConfigurator': (context) => GoalConfigurator(),
-          Reflect.routeName: (context) => Reflect()
+          Reflect.routeName: (context) => Reflect(),
+          reflectDay.routeName: (context) => reflectDay()
         },
         theme: ThemeData(
-          primaryColor: Color.fromARGB(255, 0, 71, 119),
+          primaryColor: Color.fromARGB(255, 72, 86, 150),
         ),
       ),
     );
@@ -30,6 +32,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  bool isChoosingDayToReflect = false;
   bool isStartup = true;
   String currentDay = getCurrentDay().weekday.toString();
   DateTime previousMonth = new DateTime(
@@ -65,31 +68,32 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    isChoosingDayToReflect = ModalRoute.of(context).settings.arguments;
     _positionListener.itemPositions.addListener(() {
       /// currentday + en - markeert de bovengrens en ondergrens
       if (!(_positionListener.itemPositions.value.first.index <
-                  currentDayIndex - 15) &&
+                  currentDayIndex - 10) &&
 
               ///zolang de currentscroll niet boven het maximum zit
               !(_positionListener.itemPositions.value.first.index >
-                  currentDayIndex + 15) &&
+                  currentDayIndex + 10) &&
 
               ///to prevent infinite callback loop
               showUp ||
           showDown) {
         if (!(_positionListener.itemPositions.value.first.index >
-                currentDayIndex + 15) &&
+                currentDayIndex + 10) &&
             !(_positionListener.itemPositions.value.first.index <
-                currentDayIndex - 15)) {
+                currentDayIndex - 10)) {
           setState(() {
             showUp = false;
             showDown = false;
           });
         }
       } else if (!(_positionListener.itemPositions.value.first.index <
-              currentDayIndex - 16) &&
+              currentDayIndex - 11) &&
           _positionListener.itemPositions.value.first.index >
-              currentDayIndex + 16 &&
+              currentDayIndex + 11 &&
 
           ///to prevent infinite callback loop
           !showUp) {
@@ -98,9 +102,9 @@ class _HomePageState extends State<HomePage> {
           showUp = true;
         });
       } else if (_positionListener.itemPositions.value.first.index <
-              currentDayIndex - 16 &&
+              currentDayIndex - 11 &&
           !(_positionListener.itemPositions.value.first.index >
-                  currentDayIndex + 16 &&
+                  currentDayIndex + 11 &&
               !showDown)) {
         setState(() {
           showDown = true;
@@ -117,8 +121,20 @@ class _HomePageState extends State<HomePage> {
         _scrollController.jumpTo(index: currentDayIndex);
       }
     });
-
+    if (isChoosingDayToReflect == null){
+      isChoosingDayToReflect = false;
+    }
     return Scaffold(
+      appBar:  isChoosingDayToReflect ? AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        leading: Container(),
+        centerTitle: true,
+        title:
+
+          Text("Select a day", style: TextStyle(color: Theme.of(context).primaryColor), textAlign: TextAlign.center,),
+
+      ) : null,
       body: ScrollablePositionedList.builder(
         itemPositionsListener: _positionListener,
         itemScrollController: _scrollController,
@@ -129,56 +145,61 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: Stack(
         alignment: AlignmentDirectional.center,
         children: [
-          Align(
+       !isChoosingDayToReflect ?   Align(
             alignment: Alignment.bottomRight,
             child: FloatingActionButton.extended(
+              heroTag: "btn1",
               backgroundColor: globals.buttonColor,
               label: Text("Reflect"),
               onPressed: () {
                 Navigator.pushNamed(context, Reflect.routeName);
               },
             ),
-          ),
+          ) : Container(),
           showDown
               ? Align(
-            alignment: AlignmentDirectional.bottomStart,
-            child: Container(
-                height: 75,width: 150,
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(25, 35, 0, 10),
-                  child: FloatingActionButton.extended(
-                    label: Text("current day",
-                        style: TextStyle(
-                          color: globals.buttonColor,
-                        )),
-                    backgroundColor: Colors.white,
-                    icon: Container(
-                      height: 25,
-                      width: 12,
-                      child: Icon(
-                        Icons.arrow_drop_down_rounded,
-                        color: globals.buttonColor,
-                        size: 28,
-                      ),
-                    ),
-                    onPressed: () {
-                      _scrollController.scrollTo(
-                          index: currentDayIndex,
-                          duration: Duration(milliseconds: 1000),
-                          curve: Curves.easeInOutCubic);
-                    },
-                  ),
-                )),
-          )
+                  alignment: AlignmentDirectional.bottomStart,
+                  child: Container(
+                      height: 75,
+                      width: 150,
+                      child: Padding(
+                        padding: EdgeInsets.fromLTRB(25, 35, 0, 10),
+                        child: FloatingActionButton.extended(
+                          heroTag: "btn2",
+                          label: Text("current day",
+                              style: TextStyle(
+                                color: globals.buttonColor,
+                              )),
+                          backgroundColor: Colors.white,
+                          icon: Container(
+                            height: 25,
+                            width: 12,
+                            child: Icon(
+                              Icons.arrow_drop_down_rounded,
+                              color: globals.buttonColor,
+                              size: 28,
+                            ),
+                          ),
+                          onPressed: () {
+                            _scrollController.scrollTo(
+                                index: currentDayIndex,
+                                duration: Duration(milliseconds: 1000),
+                                curve: Curves.easeInOutCubic);
+                          },
+                        ),
+                      )),
+                )
               : Container(),
           showUp
               ? Align(
                   alignment: AlignmentDirectional.topStart,
                   child: Container(
-                      height: 75,width: 150,
+                      height: 75,
+                      width: 150,
                       child: Padding(
                         padding: EdgeInsets.fromLTRB(25, 45, 0, 0),
                         child: FloatingActionButton.extended(
+                          heroTag: "btn3",
                           label: Text("current day",
                               style: TextStyle(
                                 color: globals.buttonColor,
@@ -270,7 +291,7 @@ class _HomePageState extends State<HomePage> {
                                   child: Text(
                                     "Today",
                                     style: TextStyle(
-                                        color: globals.accentColor,
+                                        color: globals.greenColor,
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16),
                                   ),
@@ -295,7 +316,7 @@ class _HomePageState extends State<HomePage> {
                                     shape: BoxShape.circle,
                                     color: Jiffy(onClickDate).week ==
                                             Jiffy(getCurrentDay()).week
-                                        ? globals.accentColor
+                                        ? globals.greenColor
                                         : Colors.transparent,
                                   ),
 
@@ -350,14 +371,20 @@ class _HomePageState extends State<HomePage> {
                   /// the list tile with the onclick and the title and subtitle
                   child: ListTile(
                     onTap: () {
-                      if (globals.activatedDays[onClickDate] == null) {
-                        List<GoalObject> test = new List<GoalObject>();
-                        globals.activatedDays.putIfAbsent(onClickDate,
-                            () => DayObject("title", "discription", test));
+                      if (isChoosingDayToReflect) {
+                        Navigator.pushNamed(
+                            context, reflectDay.routeName,
+                            arguments: onClickDate);
+                      } else {
+                        if (globals.activatedDays[onClickDate] == null) {
+                          List<GoalObject> test = new List<GoalObject>();
+                          globals.activatedDays.putIfAbsent(onClickDate,
+                              () => DayObject("title", "discription", test));
+                        }
+                        Navigator.pushNamed(
+                            context, DayConfiguratorPage.routeName,
+                            arguments: onClickDate);
                       }
-                      Navigator.pushNamed(
-                          context, DayConfiguratorPage.routeName,
-                          arguments: onClickDate);
                     },
                     title: Text(
                       () {
