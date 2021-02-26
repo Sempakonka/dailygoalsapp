@@ -1,12 +1,12 @@
 import 'package:dailygoals_app/DataTypes/Day.dart';
 import 'package:dailygoals_app/DataTypes/Goal.dart';
 import 'package:dailygoals_app/DayCofigurator.dart';
-import 'package:dailygoals_app/GoalConfigurator.dart';
 import 'package:dailygoals_app/Reflect.dart';
 import 'package:dailygoals_app/Utils.dart';
 import 'package:dailygoals_app/globals.dart' as globals;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
@@ -15,7 +15,7 @@ void main() => runApp(
         routes: {
           '/': (context) => HomePage(),
           '/dayConfigurator': (context) => DayConfiguratorPage(),
-          '/goalConfigurator': (context) => GoalConfigurator(),
+          //  '/goalConfigurator': (context) => GoalConfigurator(),
           Reflect.routeName: (context) => Reflect()
         },
         theme: ThemeData(
@@ -30,32 +30,180 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  bool isStartup = true;
   String currentDay = getCurrentDay().weekday.toString();
   DateTime previousMonth = new DateTime(
-      getCurrentDay().year, getCurrentDay().month - 1, getCurrentDay().day);
-
+      getCurrentDay().year - 3, getCurrentDay().month, getCurrentDay().day);
+  bool showDown = false, showUp = false;
   final ItemScrollController _scrollController = ItemScrollController();
-  int _currentDayIndex;
+  final ItemPositionsListener _positionListener =
+      ItemPositionsListener.create();
+
+  int currentDayIndex;
+
+  int _calculateCurrentDayIndex(DateTime beginDate) {
+    int index = 0;
+    bool escape = false;
+    DateTime curr = getCurrentDay();
+    DateTime beginDateCopy = beginDate;
+    while (!escape) {
+      index++;
+      beginDate = new DateTime(
+          beginDateCopy.year, beginDateCopy.month, (beginDateCopy.day + index));
+
+      if (beginDate == curr) {
+        escape = true;
+      }
+      //   print(index);
+      if (index > 4000) {
+        escape = true;
+      }
+    }
+
+    return index;
+  }
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_currentDayIndex != null)
-        _scrollController.jumpTo(index: _currentDayIndex - 3);
+    _positionListener.itemPositions.addListener(() {
+      /// currentday + en - markeert de bovengrens en ondergrens
+      if (!(_positionListener.itemPositions.value.first.index <
+                  currentDayIndex - 15) &&
+
+              ///zolang de currentscroll niet boven het maximum zit
+              !(_positionListener.itemPositions.value.first.index >
+                  currentDayIndex + 15) &&
+
+              ///to prevent infinite callback loop
+              showUp ||
+          showDown) {
+        if (!(_positionListener.itemPositions.value.first.index >
+                currentDayIndex + 15) &&
+            !(_positionListener.itemPositions.value.first.index <
+                currentDayIndex - 15)) {
+          setState(() {
+            showUp = false;
+            showDown = false;
+          });
+        }
+      } else if (!(_positionListener.itemPositions.value.first.index <
+              currentDayIndex - 16) &&
+          _positionListener.itemPositions.value.first.index >
+              currentDayIndex + 16 &&
+
+          ///to prevent infinite callback loop
+          !showUp) {
+        setState(() {
+          showDown = false;
+          showUp = true;
+        });
+      } else if (_positionListener.itemPositions.value.first.index <
+              currentDayIndex - 16 &&
+          !(_positionListener.itemPositions.value.first.index >
+                  currentDayIndex + 16 &&
+              !showDown)) {
+        setState(() {
+          showDown = true;
+          showUp = false;
+        });
+      }
     });
+//    print("$showUp $showDown");
+
+    currentDayIndex = _calculateCurrentDayIndex(previousMonth);
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      if (isStartup) {
+        isStartup = false;
+        _scrollController.jumpTo(index: currentDayIndex);
+      }
+    });
+
     return Scaffold(
       body: ScrollablePositionedList.builder(
+        itemPositionsListener: _positionListener,
         itemScrollController: _scrollController,
-        itemCount: 60,
         itemBuilder: (BuildContext context, index) =>
             buildGoalsList(context, previousMonth, index),
+        itemCount: 4000,
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: globals.buttonColor,
-        label: Text("Reflect"),
-        onPressed: (){
-          Navigator.pushNamed(context, Reflect.routeName);
-        },
+      floatingActionButton: Stack(
+        alignment: AlignmentDirectional.center,
+        children: [
+          Align(
+            alignment: Alignment.bottomRight,
+            child: FloatingActionButton.extended(
+              backgroundColor: globals.buttonColor,
+              label: Text("Reflect"),
+              onPressed: () {
+                Navigator.pushNamed(context, Reflect.routeName);
+              },
+            ),
+          ),
+          showDown
+              ? Align(
+            alignment: AlignmentDirectional.bottomStart,
+            child: Container(
+                height: 75,width: 150,
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(25, 35, 0, 10),
+                  child: FloatingActionButton.extended(
+                    label: Text("current day",
+                        style: TextStyle(
+                          color: globals.buttonColor,
+                        )),
+                    backgroundColor: Colors.white,
+                    icon: Container(
+                      height: 25,
+                      width: 12,
+                      child: Icon(
+                        Icons.arrow_drop_down_rounded,
+                        color: globals.buttonColor,
+                        size: 28,
+                      ),
+                    ),
+                    onPressed: () {
+                      _scrollController.scrollTo(
+                          index: currentDayIndex,
+                          duration: Duration(milliseconds: 1000),
+                          curve: Curves.easeInOutCubic);
+                    },
+                  ),
+                )),
+          )
+              : Container(),
+          showUp
+              ? Align(
+                  alignment: AlignmentDirectional.topStart,
+                  child: Container(
+                      height: 75,width: 150,
+                      child: Padding(
+                        padding: EdgeInsets.fromLTRB(25, 45, 0, 0),
+                        child: FloatingActionButton.extended(
+                          label: Text("current day",
+                              style: TextStyle(
+                                color: globals.buttonColor,
+                              )),
+                          backgroundColor: Colors.white,
+                          icon: Container(
+                            height: 25,
+                            width: 12,
+                            child: Icon(
+                              Icons.arrow_drop_up_rounded,
+                              color: globals.buttonColor,
+                              size: 28,
+                            ),
+                          ),
+                          onPressed: () {
+                            _scrollController.scrollTo(
+                                index: currentDayIndex,
+                                duration: Duration(milliseconds: 1000),
+                                curve: Curves.easeInOutCubic);
+                          },
+                        ),
+                      )),
+                )
+              : Container(),
+        ],
       ),
     );
   }
@@ -63,11 +211,13 @@ class _HomePageState extends State<HomePage> {
   Widget buildGoalsList(BuildContext context, DateTime dateTime, index) {
     DateTime onClickDate =
         new DateTime(dateTime.year, dateTime.month, (dateTime.day + index));
-    if (onClickDate == getCurrentDay()) {
-      _currentDayIndex = index;
-    }
     String curr = getCurrentDay().toString();
-    print("$curr and $onClickDate");
+
+    if (index > currentDayIndex + 30 || index < currentDayIndex - 30) {
+      //  print("button  and $index");
+    } else {
+      //    print("not button and  $index");
+    }
 
     /// The Whole Card
     return new SizedBox(
@@ -211,7 +361,8 @@ class _HomePageState extends State<HomePage> {
                     },
                     title: Text(
                       () {
-                        String date = Jiffy(onClickDate).format("EEEE MMM do");
+                        String date =
+                            Jiffy(onClickDate).format("EEEE MMM do $index");
 
                         return date;
                       }(),
