@@ -54,10 +54,13 @@ class _reflectDayState extends State<reflectDay> {
                   fontSize: 20, color: Theme.of(context).primaryColor),
             ),
             Expanded(
-              child: ListView.builder(
-                  itemCount: globals.activatedDays[selectedDay].goals.length,
-                  itemBuilder: (BuildContext context, int index) =>
-                      buildGoalsList(context, index, selectedDay)),
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                child: ListView.builder(
+                    itemCount: globals.activatedDays[selectedDay].goals.length,
+                    itemBuilder: (BuildContext context, int index) =>
+                        buildGoalsList(context, index, selectedDay)),
+              ),
             )
           ],
         ),
@@ -90,7 +93,10 @@ class _reflectDayState extends State<reflectDay> {
           },
           title: Center(
             child: Column(children: [
-              Text(globals.activatedDays[_selectedDay].goals[index].title, style: TextStyle(fontSize: 18),),
+              Text(
+                globals.activatedDays[_selectedDay].goals[index].title,
+                style: TextStyle(fontSize: 18),
+              ),
               SizedBox(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -100,23 +106,33 @@ class _reflectDayState extends State<reflectDay> {
 
                   children: [
                     RaisedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        setState(() {
+                        globals.activatedDays[selectedDay].goals[index].hasSucceeded = 1;
+
+                        });
+                      },
                       child: Icon(
                         Icons.check,
-                        color: globals.greenColor,
+                        color:     globals.activatedDays[selectedDay].goals[index].hasSucceeded == 1 ?    Colors.white : globals.greenColor,
                       ),
-                      color: Colors.white,
+                      color: globals.activatedDays[selectedDay].goals[index].hasSucceeded == 1 ?  globals.greenColor : Colors.white,
                       shape: CircleBorder(
                         side: BorderSide(color: globals.greenColor),
                       ),
                     ),
                     RaisedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        setState(() {
+                        globals.activatedDays[selectedDay].goals[index].hasSucceeded = 0;
+
+                        });
+                      },
                       child: Icon(
                         Icons.clear,
-                        color: globals.redColor,
+                        color:         globals.activatedDays[selectedDay].goals[index].hasSucceeded == 0 ?    Colors.white : globals.redColor,
                       ),
-                      color: Colors.white,
+                      color:  globals.activatedDays[selectedDay].goals[index].hasSucceeded == 0 ?  globals.redColor : Colors.white ,
                       shape: CircleBorder(
                           side: BorderSide(color: globals.redColor)),
                     ),

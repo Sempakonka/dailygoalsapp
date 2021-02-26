@@ -168,13 +168,13 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
                                 new GoalObject(
                                     dayTitleController.text,
                                     dayDescriptionController.text,
-                                    goal.hasDescription));
+                                    goal.hasDescription, 2));
                           } else {
                             globals.activatedDays[_selectedDay].goals[index] =
                                 new GoalObject(
                                     dayTitleController.text,
                                     dayDescriptionController.text,
-                                    goal.hasDescription);
+                                    goal.hasDescription, 2);
                           }
                         } else {
                           setState(() {
@@ -250,7 +250,7 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
           dayDescriptionController.clear();
           dayTitleController.clear();
           //opening the dialogue to add a new goal.
-          createGoalConfigDialog(context, new GoalObject(null, null, false),
+          createGoalConfigDialog(context, new GoalObject(null, null, false, 2),
               null, false, true, _selectedDay);
         },
       ),
