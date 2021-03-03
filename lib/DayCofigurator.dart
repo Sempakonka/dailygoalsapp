@@ -16,6 +16,10 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
   TextEditingController dayTitleController = TextEditingController();
   TextEditingController dayDescriptionController = TextEditingController();
 
+  final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
+
+  Tween<Offset> _offset = Tween(begin: Offset(1, 0), end: Offset(0, 0));
+
   createGoalConfigDialog(BuildContext context, GoalObject goal, int index,
       bool enableEmptyCheckText, bool isNew, _selectedDay) {
     String goalNumber = isNew
@@ -117,24 +121,29 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
               ),
             ),
             actions: <Widget>[
-            !isNew ?  Padding(
-                padding: EdgeInsets.fromLTRB(0, 0, 4, 0),
-                child: MaterialButton(
-                  onPressed: () {
-                    setState(() {
-                    Navigator.of(context).pop();
-                    globals.activatedDays[_selectedDay].goals.removeAt(index);
-
-                    });
-                  },
-                  elevation: 5.0,
-                  child: Text("delete",
-                      style: TextStyle(
-                          fontSize:
-                              Theme.of(context).textTheme.headline6.fontSize,
-                          color: globals.redColor)),
-                ),
-              ) : Container(),
+              !isNew
+                  ? Padding(
+                      padding: EdgeInsets.fromLTRB(0, 0, 4, 0),
+                      child: MaterialButton(
+                        onPressed: () {
+                            globals.activatedDays[_selectedDay].goals
+                                .removeAt(index);
+                            _listKey.currentState.removeItem(index, (context, animation) => buildGoalsList(context, index, _selectedDay, animation),);
+                          setState(() {
+                            Navigator.of(context).pop();
+                          });
+                        },
+                        elevation: 5.0,
+                        child: Text("delete",
+                            style: TextStyle(
+                                fontSize: Theme.of(context)
+                                    .textTheme
+                                    .headline6
+                                    .fontSize,
+                                color: globals.redColor)),
+                      ),
+                    )
+                  : Container(),
               Padding(
                 padding: EdgeInsets.fromLTRB(0, 0, 4, 0),
                 child: MaterialButton(
@@ -168,13 +177,16 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
                                 new GoalObject(
                                     dayTitleController.text,
                                     dayDescriptionController.text,
-                                    goal.hasDescription, 2));
+                                    goal.hasDescription,
+                                    2));
+                            _listKey.currentState?.insertItem(globals.activatedDays[_selectedDay].goals.length - 1);
                           } else {
                             globals.activatedDays[_selectedDay].goals[index] =
                                 new GoalObject(
                                     dayTitleController.text,
                                     dayDescriptionController.text,
-                                    goal.hasDescription, 2);
+                                    goal.hasDescription,
+                                    2);
                           }
                         } else {
                           setState(() {
@@ -228,12 +240,18 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
                 textAlign: TextAlign.left,
               ),
             ),
-            Expanded(
-              child: ListView.builder(
-                  itemCount: globals.activatedDays[_selectedDay].goals.length,
-                  itemBuilder: (BuildContext context, int index) =>
-                      buildGoalsList(context, index, _selectedDay)),
-            )
+            globals.activatedDays[_selectedDay].goals.length == 0
+                ? Expanded( child: Center(
+                    child: Text("You have no goals set yet for this day!", style: TextStyle(color: Theme.of(context).primaryColor),),
+            )   )
+                : Expanded(
+                    child: AnimatedList(
+                      key:  _listKey,
+                        initialItemCount:
+                            globals.activatedDays[_selectedDay].goals.length,
+                        itemBuilder: (BuildContext context, int index, Animation<double> animation) =>
+                            buildGoalsList(context, index, _selectedDay,animation)),
+                  ),
           ],
         ),
       ),
@@ -258,8 +276,11 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
   }
 
   Widget buildGoalsList(
-      BuildContext context, int index, DateTime _selectedDay) {
-    return new Container(
+      BuildContext context, int index, DateTime _selectedDay, Animation<double> animation) {
+    print(index);
+    return new SizeTransition(sizeFactor: animation, child:
+    Container(
+      key: ValueKey<int>(index),
       margin: EdgeInsets.only(left: 9, top: 0, right: 9, bottom: 12),
       decoration: BoxDecoration(
           color: Colors.white,
@@ -293,8 +314,8 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
               false,
               _selectedDay);
         },
-        title: Text(globals.activatedDays[_selectedDay].goals[index].title),
-      ),
+        title: Text(globals.activatedDays[_selectedDay]?.goals[index]?.title),
+      ),),
     );
   }
 }
