@@ -13,6 +13,7 @@ class reflectDay extends StatefulWidget {
 class _reflectDayState extends State<reflectDay> with TickerProviderStateMixin {
   DateTime selectedDay;
   List<double> _tileSize = [];
+ List<TextEditingController> _reflectionNotesController = [];
 
 
   final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
@@ -82,11 +83,21 @@ class _reflectDayState extends State<reflectDay> with TickerProviderStateMixin {
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){
+
+        },
+      ),
     );
   }
 
   Widget buildGoalsList(BuildContext context, int index, DateTime _selectedDay,
       Animation<double> animation) {
+    _reflectionNotesController.add(new TextEditingController());
+
+    if ( globals.activatedDays[_selectedDay].goals[index].reflectionNotes != null){
+      _reflectionNotesController[index].text =  globals.activatedDays[_selectedDay].goals[index].reflectionNotes;
+    }
 
     return new AnimatedContainer(        key: UniqueKey(),
 
@@ -183,7 +194,11 @@ class _reflectDayState extends State<reflectDay> with TickerProviderStateMixin {
                 ? Padding(padding: EdgeInsets.fromLTRB(15, 10, 15, 10), child: TextField(
               keyboardType: TextInputType.multiline,
               maxLines: null,
-              controller: null,
+              controller: _reflectionNotesController[index],
+              onChanged: (text){
+                print("changed");
+                globals.activatedDays[_selectedDay].goals[index].reflectionNotes = text;
+              } ,
               decoration: InputDecoration(
                 isDense: true,
                 hintText: 'So why did you not reach this goal? \n\n',

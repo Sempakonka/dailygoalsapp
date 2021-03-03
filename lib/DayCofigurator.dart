@@ -93,6 +93,7 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
                       keyboardType: TextInputType.multiline,
                       maxLines: null,
                       controller: dayDescriptionController,
+
                       decoration: InputDecoration(
                         isDense: true,
                         hintText: 'summary of your goal\n\n',
@@ -178,7 +179,7 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
                                     dayTitleController.text,
                                     dayDescriptionController.text,
                                     goal.hasDescription,
-                                    2));
+                                    2, null));
                             _listKey.currentState?.insertItem(globals.activatedDays[_selectedDay].goals.length - 1);
                           } else {
                             globals.activatedDays[_selectedDay].goals[index] =
@@ -186,7 +187,7 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
                                     dayTitleController.text,
                                     dayDescriptionController.text,
                                     goal.hasDescription,
-                                    2);
+                                    2, null);
                           }
                         } else {
                           setState(() {
@@ -268,7 +269,7 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
           dayDescriptionController.clear();
           dayTitleController.clear();
           //opening the dialogue to add a new goal.
-          createGoalConfigDialog(context, new GoalObject(null, null, false, 2),
+          createGoalConfigDialog(context, new GoalObject(null, null, false, 2, null),
               null, false, true, _selectedDay);
         },
       ),
