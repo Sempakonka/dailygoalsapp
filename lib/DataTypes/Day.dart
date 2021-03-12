@@ -1,8 +1,23 @@
 import 'package:dailygoals_app/DataTypes/Goal.dart';
+import 'package:json_annotation/json_annotation.dart';
 
-class DayObject{
-  DayObject(this.title, this.description, this.goals);
+@JsonSerializable()
+class DayObject {
+  DayObject({this.title, this.description, this.goals});
+
   final String title;
   final String description;
-  List<GoalObject> goals = new List();
+  final List<GoalObject> goals;
+
+  factory DayObject.fromJson(Map<String, dynamic> json) {
+    var goalsFromJson = json['goals'];
+    List<GoalObject> goalsList = goalsFromJson.cast<GoalObject>();
+    return new DayObject(
+        title: json['title'],
+        description: json['description'],
+        goals: goalsList);
+  }
+
+  Map<String, dynamic> toJson() =>
+      {'title': title, 'description': description, 'goals': goals};
 }

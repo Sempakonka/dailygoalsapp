@@ -18,8 +18,6 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
 
   final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
 
-  Tween<Offset> _offset = Tween(begin: Offset(1, 0), end: Offset(0, 0));
-
   createGoalConfigDialog(BuildContext context, GoalObject goal, int index,
       bool enableEmptyCheckText, bool isNew, _selectedDay) {
     String goalNumber = isNew
@@ -93,7 +91,6 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
                       keyboardType: TextInputType.multiline,
                       maxLines: null,
                       controller: dayDescriptionController,
-
                       decoration: InputDecoration(
                         isDense: true,
                         hintText: 'summary of your goal\n\n',
@@ -127,9 +124,13 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
                       padding: EdgeInsets.fromLTRB(0, 0, 4, 0),
                       child: MaterialButton(
                         onPressed: () {
-                            globals.activatedDays[_selectedDay].goals
-                                .removeAt(index);
-                            _listKey.currentState.removeItem(index, (context, animation) => buildGoalsList(context, index, _selectedDay, animation),);
+                          globals.activatedDays[_selectedDay].goals
+                              .removeAt(index);
+                          _listKey.currentState.removeItem(
+                            index,
+                            (context, animation) => buildGoalsList(
+                                context, index, _selectedDay, animation),
+                          );
                           setState(() {
                             Navigator.of(context).pop();
                           });
@@ -159,7 +160,13 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
                 padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
                 child: MaterialButton(
                     onPressed: () {
+                      //      UserPreferences().data =    data + 'a';
+
+                      //   setState(() {
+                      //   });
+
                       setState(() {
+                        //  data = UserPreferences().data;
                         // if user doesn't use a description the textfield will always be valid. If user does, and inputfield is not empty it will also be valid
                         bool isValidDescription;
                         if (!goal.hasDescription ||
@@ -176,18 +183,22 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
                           if (isNew) {
                             globals.activatedDays[_selectedDay].goals.add(
                                 new GoalObject(
-                                    dayTitleController.text,
-                                    dayDescriptionController.text,
-                                    goal.hasDescription,
-                                    2, null));
-                            _listKey.currentState?.insertItem(globals.activatedDays[_selectedDay].goals.length - 1);
+                                    title: dayTitleController.text,
+                                    summary: dayDescriptionController.text,
+                                    hasDescription: goal.hasDescription,
+                                    hasSucceeded: 2,
+                                    reflectionNotes: null));
+                            _listKey.currentState?.insertItem(globals
+                                    .activatedDays[_selectedDay].goals.length -
+                                1);
                           } else {
                             globals.activatedDays[_selectedDay].goals[index] =
                                 new GoalObject(
-                                    dayTitleController.text,
-                                    dayDescriptionController.text,
-                                    goal.hasDescription,
-                                    2, null);
+                                    title: dayTitleController.text,
+                                    summary: dayDescriptionController.text,
+                                    hasDescription: goal.hasDescription,
+                                    hasSucceeded: 2,
+                                    reflectionNotes: null);
                           }
                         } else {
                           setState(() {
@@ -242,16 +253,22 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
               ),
             ),
             globals.activatedDays[_selectedDay].goals.length == 0
-                ? Expanded( child: Center(
-                    child: Text("You have no goals set yet for this day!", style: TextStyle(color: Theme.of(context).primaryColor),),
-            )   )
+                ? Expanded(
+                    child: Center(
+                    child: Text(
+                      "You have no goals set yet for this day!",
+                      style: TextStyle(color: Theme.of(context).primaryColor),
+                    ),
+                  ))
                 : Expanded(
                     child: AnimatedList(
-                      key:  _listKey,
+                        key: _listKey,
                         initialItemCount:
                             globals.activatedDays[_selectedDay].goals.length,
-                        itemBuilder: (BuildContext context, int index, Animation<double> animation) =>
-                            buildGoalsList(context, index, _selectedDay,animation)),
+                        itemBuilder: (BuildContext context, int index,
+                                Animation<double> animation) =>
+                            buildGoalsList(
+                                context, index, _selectedDay, animation)),
                   ),
           ],
         ),
@@ -269,54 +286,66 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
           dayDescriptionController.clear();
           dayTitleController.clear();
           //opening the dialogue to add a new goal.
-          createGoalConfigDialog(context, new GoalObject(null, null, false, 2, null),
-              null, false, true, _selectedDay);
+          createGoalConfigDialog(
+              context,
+              new GoalObject(
+                  title: null,
+                  summary: null,
+                  hasDescription: false,
+                  hasSucceeded: 2,
+                  reflectionNotes: null),
+              null,
+              false,
+              true,
+              _selectedDay);
         },
       ),
     );
   }
 
-  Widget buildGoalsList(
-      BuildContext context, int index, DateTime _selectedDay, Animation<double> animation) {
+  Widget buildGoalsList(BuildContext context, int index, DateTime _selectedDay,
+      Animation<double> animation) {
     print(index);
-    return new SizeTransition(sizeFactor: animation, child:
-    Container(
-      key: ValueKey<int>(index),
-      margin: EdgeInsets.only(left: 9, top: 0, right: 9, bottom: 12),
-      decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(10),
-              topRight: Radius.circular(10),
-              bottomLeft: Radius.circular(10),
-              bottomRight: Radius.circular(10)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              spreadRadius: 1,
-              blurRadius: 2,
-              offset: Offset(0, 2),
-            )
-          ]),
-      child: ListTile(
-        onTap: () {
-          //setting the textFields of the input dialogue
-          dayDescriptionController.text =
-              globals.activatedDays[_selectedDay].goals[index].summary;
-          dayTitleController.text =
-              globals.activatedDays[_selectedDay].goals[index].title;
+    return new SizeTransition(
+      sizeFactor: animation,
+      child: Container(
+        key: ValueKey<int>(index),
+        margin: EdgeInsets.only(left: 9, top: 0, right: 9, bottom: 12),
+        decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(10),
+                topRight: Radius.circular(10),
+                bottomLeft: Radius.circular(10),
+                bottomRight: Radius.circular(10)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 1,
+                blurRadius: 2,
+                offset: Offset(0, 2),
+              )
+            ]),
+        child: ListTile(
+          onTap: () {
+            //setting the textFields of the input dialogue
+            dayDescriptionController.text =
+                globals.activatedDays[_selectedDay].goals[index].summary;
+            dayTitleController.text =
+                globals.activatedDays[_selectedDay].goals[index].title;
 
-          //opening the dialogue
-          createGoalConfigDialog(
-              context,
-              globals.activatedDays[_selectedDay].goals[index],
-              index,
-              false,
-              false,
-              _selectedDay);
-        },
-        title: Text(globals.activatedDays[_selectedDay]?.goals[index]?.title),
-      ),),
+            //opening the dialogue
+            createGoalConfigDialog(
+                context,
+                globals.activatedDays[_selectedDay].goals[index],
+                index,
+                false,
+                false,
+                _selectedDay);
+          },
+          title: Text(globals.activatedDays[_selectedDay]?.goals[index]?.title),
+        ),
+      ),
     );
   }
 }

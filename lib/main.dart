@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dailygoals_app/DataTypes/Day.dart';
 import 'package:dailygoals_app/DataTypes/Goal.dart';
 import 'package:dailygoals_app/DayCofigurator.dart';
@@ -11,21 +13,30 @@ import 'package:flutter/scheduler.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:tuple/tuple.dart';
+import 'package:dailygoals_app/user_preferences.dart';
+import 'package:json_annotation/json_annotation.dart';
 
-void main() => runApp(
-      MaterialApp(
-        routes: {
-          '/': (context) => HomePage(),
-          '/dayConfigurator': (context) => DayConfiguratorPage(),
-          //  '/goalConfigurator': (context) => GoalConfigurator(),
-          Reflect.routeName: (context) => Reflect(),
-          reflectDay.routeName: (context) => reflectDay()
-        },
-        theme: ThemeData(
-          primaryColor: Color.fromARGB(255, 72, 86, 150),
-        ),
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+
+await UserPreferences().init();
+
+  runApp(
+    MaterialApp(
+      routes: {
+        '/': (context) => HomePage(),
+        '/dayConfigurator': (context) => DayConfiguratorPage(),
+        //  '/goalConfigurator': (context) => GoalConfigurator(),
+        Reflect.routeName: (context) => Reflect(),
+        reflectDay.routeName: (context) => reflectDay()
+      },
+      theme: ThemeData(
+        primaryColor: Color.fromARGB(255, 72, 86, 150),
       ),
-    );
+    ),
+  );
+}
 
 class HomePage extends StatefulWidget {
   @override
@@ -43,12 +54,27 @@ class _HomePageState extends State<HomePage> {
   final ItemPositionsListener _positionListener =
       ItemPositionsListener.create();
 
+  String data;
+
+  void initState() {
+    data = UserPreferences().data;
+
+    Map userMap = jsonDecode(data);
+    var user = DayObject.fromJson(userMap);
+  print(user);
+
+    super.initState();
+  }
+
+
+
   int currentDayIndex;
 
   int _calculateCurrentDayIndex(DateTime beginDate) {
     int index = 0;
     bool escape = false;
     DateTime curr = getCurrentDay();
+    curr = curr.subtract(Duration(days: curr.weekday - 1));
     DateTime beginDateCopy = beginDate;
     while (!escape) {
       index++;
@@ -270,7 +296,10 @@ class _HomePageState extends State<HomePage> {
               : Container(),
 
           SizedBox(
-            height: goalsReflectedOn == null ? 70 : 110,
+            height: goalsReflectedOn == null ||
+                    (goalsReflectedOn.item1 == 0 && goalsReflectedOn.item2 == 0)
+                ? 70
+                : 110,
             child: Row(
               children: [
                 /// The row containing the left section of the card and the card itself.
@@ -366,6 +395,15 @@ class _HomePageState extends State<HomePage> {
 
                       /// the list tile with the onclick and the title and subtitle
                       onPressed: () {
+
+
+
+
+
+
+
+
+
                         if (isChoosingDayToReflect) {
                           Navigator.pushNamed(context, reflectDay.routeName,
                               arguments: onClickDate);
@@ -373,8 +411,16 @@ class _HomePageState extends State<HomePage> {
                           if (globals.activatedDays[onClickDate] == null) {
                             List<GoalObject> test = new List<GoalObject>();
                             globals.activatedDays.putIfAbsent(onClickDate,
-                                () => DayObject("title", "discription", test));
+                                () => DayObject(title: "titleeeeeeeeeeeeee", description: "discription", goals: test));
                           }
+
+                          String saveThisJson = jsonEncode(globals.activatedDays[onClickDate]);
+
+                     UserPreferences().data =    saveThisJson;
+
+setState(() {
+  data = UserPreferences().data;
+});
                           Navigator.pushNamed(
                               context, DayConfiguratorPage.routeName,
                               arguments: onClickDate);
@@ -413,21 +459,22 @@ class _HomePageState extends State<HomePage> {
                               }(),
                               textAlign: TextAlign.start,
                             ),
-                            goalsReflectedOn == null || (goalsReflectedOn.item1 == 0 && goalsReflectedOn.item2 == 0)
+                            goalsReflectedOn == null ||
+                                    (goalsReflectedOn.item1 == 0 &&
+                                        goalsReflectedOn.item2 == 0)
                                 ? Container()
-                                :
-                              Text(
-                                "You have reached ${goalsReflectedOn.item2} of you own goals ",
-                                style: TextStyle(color: Colors.green),
-                              ),
-                            goalsReflectedOn == null || (goalsReflectedOn.item1 == 0 && goalsReflectedOn.item2 == 0)
+                                : Text(
+                                    "You have reached ${goalsReflectedOn.item2} of you own goals ",
+                                    style: TextStyle(color: Colors.green),
+                                  ),
+                            goalsReflectedOn == null ||
+                                    (goalsReflectedOn.item1 == 0 &&
+                                        goalsReflectedOn.item2 == 0)
                                 ? Container()
-                                :
-                              Text(
-                                "${goalsReflectedOn.item1} goals you didn't.",
-                                style: TextStyle(color: Colors.red),
-                              ),
-
+                                : Text(
+                                    "${goalsReflectedOn.item1} goals you didn't.",
+                                    style: TextStyle(color: Colors.red),
+                                  ),
                           ],
                         ),
                       ),
@@ -465,6 +512,10 @@ class _HomePageState extends State<HomePage> {
   void activeCurrentDay() {
     List<GoalObject> test = new List<GoalObject>();
     globals.activatedDays.putIfAbsent(
-        getCurrentDay(), () => DayObject("title", "discription", test));
+        getCurrentDay(), () => DayObject(title: "titleeeeeeeeeeeeee", description: "discription", goals: test));
+  }
+
+  void setData(){
+
   }
 }

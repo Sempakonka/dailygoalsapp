@@ -185,31 +185,32 @@ class _reflectDayState extends State<reflectDay> with TickerProviderStateMixin {
                       globals.activatedDays[selectedDay].goals[index]
                               .hasSucceeded ==
                           0
-                  ? Expanded(child: Padding(
-
-                      padding: EdgeInsets.fromLTRB(15, 10, 15, 0),
-                      child: TextField(
-                        keyboardType: TextInputType.multiline,
-                        maxLines: null,
-                        controller: _reflectionNotesController[index],
-                        onChanged: (text) {
-                          globals.activatedDays[_selectedDay].goals[index]
-                              .reflectionNotes = text;
-                        },
-                        decoration: InputDecoration(
-
-                          hintText: 'So why did you not reach this goal? \n\n',
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(width: 0.5)),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                width: 2,
-                                color: Theme.of(context).primaryColor),
+                  ? Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.fromLTRB(15, 10, 15, 0),
+                        child: TextField(
+                          keyboardType: TextInputType.multiline,
+                          maxLines: null,
+                          controller: _reflectionNotesController[index],
+                          onChanged: (text) {
+                            globals.activatedDays[_selectedDay].goals[index]
+                                .reflectionNotes = text;
+                          },
+                          decoration: InputDecoration(
+                            hintText:
+                                'So why did you not reach this goal? \n\n',
+                            enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(width: 0.5)),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  width: 2,
+                                  color: Theme.of(context).primaryColor),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-              )  : Container(),
+                    )
+                  : Container(),
             ],
           ),
         ),
