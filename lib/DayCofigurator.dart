@@ -61,9 +61,9 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
                       padding: EdgeInsets.fromLTRB(0, 3, 0, 0),
                       child: Row(
                         children: [
-                          Icon(Icons.error, color: Colors.red, size: 14),
+                          Icon(Icons.error, color: globals.darkRed, size: 14),
                           Text("  The title field seems to be empty!",
-                              style: TextStyle(color: Colors.red, fontSize: 13))
+                              style: TextStyle(color: globals.darkRed, fontSize: 13))
                         ],
                       ),
                     ),
@@ -112,9 +112,9 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
                       padding: EdgeInsets.fromLTRB(0, 3, 0, 0),
                       child: Row(
                         children: [
-                          Icon(Icons.error, color: Colors.red, size: 14),
+                          Icon(Icons.error, color:globals.darkRed, size: 14),
                           Text("  The description field seems to be empty!",
-                              style: TextStyle(color: Colors.red, fontSize: 13))
+                              style: TextStyle(color: globals.darkRed, fontSize: 13))
                         ],
                       ),
                     ),
@@ -216,7 +216,7 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
                     },
                     elevation: 5.0,
                     child: Text("submit",
-                        style: Theme.of(context).textTheme.headline6)),
+                        style: TextStyle(fontSize: Theme.of(context).textTheme.headline6.fontSize, color: globals.green))),
               ),
             ],
           );
