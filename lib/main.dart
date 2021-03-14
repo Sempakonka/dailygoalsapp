@@ -159,44 +159,95 @@ class _HomePageState extends State<HomePage> {
                   centerTitle: true,
                   title: Text(
                     "Select a day",
-                    style: TextStyle(color: Theme.of(context).primaryColor),
+                    style: TextStyle(color: Colors.white),
                     textAlign: TextAlign.center,
                   ),
                 )
               : AppBar(
                   elevation: 0,
                   backgroundColor: Colors.transparent,
-                  leading: Padding(
-                    padding: EdgeInsets.fromLTRB(20, 10, 0, 10),
-                    child: TextButton(
+            centerTitle: true,
+            title: Text(
+              "Goals Buddy",
+              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
 
-
-                        child: Icon(
-                          Icons.arrow_back_ios,
-                          color: Colors.white,
-                          size: 26,
-                        ),
-
+            ///TODO: implement about button
+            /*      leading:
+                     TextButton(
+                      child: Icon(
+                        Icons.,
+                        color: Colors.white,
+                        size: 26,
+                      ),
                       onPressed: () {
                         Navigator.pushNamed(context, '/');
                       },
                       style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.resolveWith((states) => globals.backgroundButtonBlue) ,
-                        shape:  MaterialStateProperty.resolveWith((states) =>  RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),)
-                        ),
+
+                        shape: MaterialStateProperty.resolveWith(
+                            (states) => RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                )),
                       ),
+                    ),*/
 
-
-                    ),
-                  ),
                 ),
-          body: ScrollablePositionedList.builder(
-            itemPositionsListener: _positionListener,
-            itemScrollController: _scrollController,
-            itemBuilder: (BuildContext context, index) =>
-                buildGoalsList(context, previousMonth, index),
-            itemCount: 4000,
+          body: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.fromLTRB(0, 20, 0, 35),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(24)),
+                    color: Colors.white,
+                    boxShadow: <BoxShadow>[
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.2),
+                        blurRadius: 13,
+                        spreadRadius: 10,
+                        offset: Offset(0, 0),
+                      ),
+                    ],
+                  ),
+                  width: 340,
+                  height: 70,
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                    Text(
+                      "You have not set any goals today!",
+                      style: TextStyle(fontSize: 13),
+                    ),
+                    ElevatedButton(
+                      onPressed: null,
+                      style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.resolveWith(
+                              (states) => globals.darkRed),
+                          shape: MaterialStateProperty.resolveWith(
+                          (states) => RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                )),
+                      ),
+                      child: Text(
+                        "Set goals",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    )
+                  ]),
+                ),
+              ),
+              Expanded(
+                child: ScrollablePositionedList.builder(
+                  itemPositionsListener: _positionListener,
+                  itemScrollController: _scrollController,
+                  itemBuilder: (BuildContext context, index) =>
+                      buildGoalsList(context, previousMonth, index),
+                  itemCount: 4000,
+                ),
+              )
+            ],
           ),
           floatingActionButton: Stack(
             alignment: AlignmentDirectional.center,
@@ -300,13 +351,13 @@ class _HomePageState extends State<HomePage> {
           /// The Line At the current day card
           onClickDate == getCurrentDay()
               ? Padding(
-                  padding: EdgeInsets.fromLTRB(0, 23, 0, 12),
+                  padding: EdgeInsets.fromLTRB(30, 23, 30, 12),
                   child: Container(
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(40),
-                        color: Colors.grey),
+                        color: globals.darkBlue),
                     height: 1.0,
-                    width: 400,
+                    width: double.infinity,
                   ),
                 )
               : Container(),
@@ -327,7 +378,7 @@ class _HomePageState extends State<HomePage> {
             height: goalsReflectedOn == null ||
                     (goalsReflectedOn.item1 == 0 && goalsReflectedOn.item2 == 0)
                 ? 80
-                : 120,
+                : 105,
             child: Row(
               children: [
                 /// The row containing the left section of the card and the card itself.
@@ -349,7 +400,7 @@ class _HomePageState extends State<HomePage> {
                                     child: Text(
                                       "Today",
                                       style: TextStyle(
-                                          color: Colors.green,
+                                          color: globals.green,
                                           fontWeight: FontWeight.bold,
                                           fontSize: 16),
                                     ),
@@ -374,7 +425,7 @@ class _HomePageState extends State<HomePage> {
                                       shape: BoxShape.circle,
                                       color: Jiffy(onClickDate).week ==
                                               Jiffy(getCurrentDay()).week
-                                          ? Colors.green
+                                          ? globals.green
                                           : Colors.transparent,
                                     ),
 
@@ -479,30 +530,35 @@ class _HomePageState extends State<HomePage> {
                                     color: globals.darkBlue),
                                 textAlign: TextAlign.start,
                               ),
-                              Text(
-                                () {
-                                  int amountOfGoals =
-                                      ttt.activatedDays[onClickDate] == null
-                                          ? 0
-                                          : ttt.activatedDays[onClickDate].goals
-                                              .length;
+                              goalsReflectedOn == null ||
+                                      (goalsReflectedOn.item1 == 0 &&
+                                          goalsReflectedOn.item2 == 0)
+                                  ? Text(
+                                      () {
+                                        int amountOfGoals =
+                                            ttt.activatedDays[onClickDate] ==
+                                                    null
+                                                ? 0
+                                                : ttt.activatedDays[onClickDate]
+                                                    .goals.length;
 
-                                  return amountOfGoals == 0
-                                      ? "You have no goals set for this day"
-                                      : "You have $amountOfGoals goals set for this day";
-                                }(),
-                                textAlign: TextAlign.start,
-                                style: TextStyle(
-                                    color: globals.grey,
-                                    fontWeight: FontWeight.normal),
-                              ),
+                                        return amountOfGoals == 0
+                                            ? "You have no goals set for this day"
+                                            : "You have $amountOfGoals goals set for this day";
+                                      }(),
+                                      textAlign: TextAlign.start,
+                                      style: TextStyle(
+                                          color: globals.grey,
+                                          fontWeight: FontWeight.normal),
+                                    )
+                                  : Container(),
                               goalsReflectedOn == null ||
                                       (goalsReflectedOn.item1 == 0 &&
                                           goalsReflectedOn.item2 == 0)
                                   ? Container()
                                   : Text(
                                       "You have reached ${goalsReflectedOn.item2} of you own goals ",
-                                      style: TextStyle(color: Colors.green),
+                                      style: TextStyle(color: globals.green),
                                     ),
                               goalsReflectedOn == null ||
                                       (goalsReflectedOn.item1 == 0 &&
@@ -510,7 +566,7 @@ class _HomePageState extends State<HomePage> {
                                   ? Container()
                                   : Text(
                                       "${goalsReflectedOn.item1} goals you didn't.",
-                                      style: TextStyle(color: Colors.red),
+                                      style: TextStyle(color: globals.darkRed),
                                     ),
                             ],
                           ),

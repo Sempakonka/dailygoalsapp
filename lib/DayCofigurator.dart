@@ -232,12 +232,26 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
-        leading: FlatButton(
-          child: Icon(Icons.arrow_back_ios,
-              color: Theme.of(context).primaryColor, size: 30),
-          onPressed: () {
-            Navigator.pushNamed(context, '/');
-          },
+        leading: Padding(
+          padding: EdgeInsets.fromLTRB(20, 10, 0, 10),
+          child: TextButton(
+            child: Icon(
+              Icons.arrow_back_ios,
+              color: Colors.white,
+              size: 26,
+            ),
+            onPressed: () {
+              Navigator.pushNamed(context, '/');
+            },
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.resolveWith(
+                      (states) => globals.backgroundButtonBlue),
+              shape: MaterialStateProperty.resolveWith(
+                      (states) => RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  )),
+            ),
+          ),
         ),
       ),
       body: Center(
