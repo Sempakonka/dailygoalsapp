@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:dailygoals_app/DataTypes/Goal.dart';
 import 'package:dailygoals_app/Utils.dart';
 import 'package:dailygoals_app/globals.dart' as globals;
+import 'package:dailygoals_app/user_preferences.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jiffy/jiffy.dart';
@@ -17,13 +20,13 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
   TextEditingController dayDescriptionController = TextEditingController();
 
   final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
+  var ttt = globals.Globals();
 
   createGoalConfigDialog(BuildContext context, GoalObject goal, int index,
       bool enableEmptyCheckText, bool isNew, _selectedDay) {
     String goalNumber = isNew
-        ? (globals.activatedDays[_selectedDay].goals.length + 1).toString()
-        : (globals.activatedDays[_selectedDay].goals.indexOf(goal) + 1)
-            .toString();
+        ? (ttt.activatedDays[_selectedDay].goals.length + 1).toString()
+        : (ttt.activatedDays[_selectedDay].goals.indexOf(goal) + 1).toString();
     return showDialog(
         context: context,
         builder: (context) {
@@ -124,8 +127,7 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
                       padding: EdgeInsets.fromLTRB(0, 0, 4, 0),
                       child: MaterialButton(
                         onPressed: () {
-                          globals.activatedDays[_selectedDay].goals
-                              .removeAt(index);
+                          ttt.activatedDays[_selectedDay].goals.removeAt(index);
                           _listKey.currentState.removeItem(
                             index,
                             (context, animation) => buildGoalsList(
@@ -134,6 +136,9 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
                           setState(() {
                             Navigator.of(context).pop();
                           });
+                          String saveThisJson = jsonEncode(ttt);
+
+                          UserPreferences().data = saveThisJson;
                         },
                         elevation: 5.0,
                         child: Text("delete",
@@ -160,54 +165,54 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
                 padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
                 child: MaterialButton(
                     onPressed: () {
-                      //      UserPreferences().data =    data + 'a';
-
-                      //   setState(() {
-                      //   });
-
-                      setState(() {
-                        //  data = UserPreferences().data;
-                        // if user doesn't use a description the textfield will always be valid. If user does, and inputfield is not empty it will also be valid
-                        bool isValidDescription;
-                        if (!goal.hasDescription ||
-                            dayDescriptionController.text.isNotEmpty) {
-                          isValidDescription = true;
-                        } else {
-                          isValidDescription = false;
-                        }
-
-                        if (dayTitleController.text.isNotEmpty &&
-                            isValidDescription) {
-                          Navigator.of(context).pop();
-
-                          if (isNew) {
-                            globals.activatedDays[_selectedDay].goals.add(
-                                new GoalObject(
-                                    title: dayTitleController.text,
-                                    summary: dayDescriptionController.text,
-                                    hasDescription: goal.hasDescription,
-                                    hasSucceeded: 2,
-                                    reflectionNotes: null));
-                            _listKey.currentState?.insertItem(globals
-                                    .activatedDays[_selectedDay].goals.length -
-                                1);
+                      setState(
+                        () {
+                          //  data = UserPreferences().data;
+                          // if user doesn't use a description the textfield will always be valid. If user does, and inputfield is not empty it will also be valid
+                          bool isValidDescription;
+                          if (!goal.hasDescription ||
+                              dayDescriptionController.text.isNotEmpty) {
+                            isValidDescription = true;
                           } else {
-                            globals.activatedDays[_selectedDay].goals[index] =
-                                new GoalObject(
-                                    title: dayTitleController.text,
-                                    summary: dayDescriptionController.text,
-                                    hasDescription: goal.hasDescription,
-                                    hasSucceeded: 2,
-                                    reflectionNotes: null);
+                            isValidDescription = false;
                           }
-                        } else {
-                          setState(() {
+
+                          if (dayTitleController.text.isNotEmpty &&
+                              isValidDescription) {
                             Navigator.of(context).pop();
-                            createGoalConfigDialog(context, goal, index, true,
-                                isNew, _selectedDay);
-                          });
-                        }
-                      });
+
+                            if (isNew) {
+                              ttt.activatedDays[_selectedDay].goals.add(
+                                  new GoalObject(
+                                      title: dayTitleController.text,
+                                      summary: dayDescriptionController.text,
+                                      hasDescription: goal.hasDescription,
+                                      hasSucceeded: 2,
+                                      reflectionNotes: null));
+                              _listKey.currentState?.insertItem(
+                                  ttt.activatedDays[_selectedDay].goals.length -
+                                      1);
+                            } else {
+                              ttt.activatedDays[_selectedDay].goals[index] =
+                                  new GoalObject(
+                                      title: dayTitleController.text,
+                                      summary: dayDescriptionController.text,
+                                      hasDescription: goal.hasDescription,
+                                      hasSucceeded: 2,
+                                      reflectionNotes: null);
+                            }
+                          } else {
+                            setState(() {
+                              Navigator.of(context).pop();
+                              createGoalConfigDialog(context, goal, index, true,
+                                  isNew, _selectedDay);
+                            });
+                          }
+                        },
+                      );
+                      String saveThisJson = jsonEncode(ttt);
+
+                      UserPreferences().data = saveThisJson;
                     },
                     elevation: 5.0,
                     child: Text("submit",
@@ -252,7 +257,7 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
                 textAlign: TextAlign.left,
               ),
             ),
-            globals.activatedDays[_selectedDay].goals.length == 0
+            ttt.activatedDays[_selectedDay].goals.length == 0
                 ? Expanded(
                     child: Center(
                     child: Text(
@@ -264,7 +269,7 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
                     child: AnimatedList(
                         key: _listKey,
                         initialItemCount:
-                            globals.activatedDays[_selectedDay].goals.length,
+                            ttt.activatedDays[_selectedDay].goals.length,
                         itemBuilder: (BuildContext context, int index,
                                 Animation<double> animation) =>
                             buildGoalsList(
@@ -330,20 +335,20 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
           onTap: () {
             //setting the textFields of the input dialogue
             dayDescriptionController.text =
-                globals.activatedDays[_selectedDay].goals[index].summary;
+                ttt.activatedDays[_selectedDay].goals[index].summary;
             dayTitleController.text =
-                globals.activatedDays[_selectedDay].goals[index].title;
+                ttt.activatedDays[_selectedDay].goals[index].title;
 
             //opening the dialogue
             createGoalConfigDialog(
                 context,
-                globals.activatedDays[_selectedDay].goals[index],
+                ttt.activatedDays[_selectedDay].goals[index],
                 index,
                 false,
                 false,
                 _selectedDay);
           },
-          title: Text(globals.activatedDays[_selectedDay]?.goals[index]?.title),
+          title: Text(ttt.activatedDays[_selectedDay]?.goals[index]?.title),
         ),
       ),
     );

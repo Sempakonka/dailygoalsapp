@@ -44,6 +44,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  var ttt = globals.Globals();
   bool isChoosingDayToReflect = false;
   bool isStartup = true;
   String currentDay = getCurrentDay().weekday.toString();
@@ -57,12 +58,11 @@ class _HomePageState extends State<HomePage> {
   String data;
 
   void initState() {
+    ///We get the string containing Json
     data = UserPreferences().data;
 
-    Map userMap = jsonDecode(data);
-    var user = DayObject.fromJson(userMap);
-  print(user);
-
+   Map activatedDaysMap  = jsonDecode(data);
+     ttt = ttt.fromJson(activatedDaysMap);
     super.initState();
   }
 
@@ -408,13 +408,14 @@ class _HomePageState extends State<HomePage> {
                           Navigator.pushNamed(context, reflectDay.routeName,
                               arguments: onClickDate);
                         } else {
-                          if (globals.activatedDays[onClickDate] == null) {
+                          if (ttt.activatedDays[onClickDate] == null) {
                             List<GoalObject> test = new List<GoalObject>();
-                            globals.activatedDays.putIfAbsent(onClickDate,
+                            ttt.activatedDays.putIfAbsent(onClickDate,
                                 () => DayObject(title: "titleeeeeeeeeeeeee", description: "discription", goals: test));
                           }
 
-                          String saveThisJson = jsonEncode(globals.activatedDays[onClickDate]);
+                          String saveThisJson = jsonEncode(ttt);
+
 
                      UserPreferences().data =    saveThisJson;
 
@@ -448,9 +449,9 @@ setState(() {
                             Text(
                               () {
                                 int amountOfGoals =
-                                    globals.activatedDays[onClickDate] == null
+                                    ttt.activatedDays[onClickDate] == null
                                         ? 0
-                                        : globals.activatedDays[onClickDate]
+                                        : ttt.activatedDays[onClickDate]
                                             .goals.length;
 
                                 return amountOfGoals == 0
@@ -490,11 +491,11 @@ setState(() {
   }
 
   Tuple2<int, int> checkForReflectedGoals(DateTime dateTime) {
-    if (globals.activatedDays[dateTime]?.goals == null) {
+    if (ttt.activatedDays[dateTime]?.goals == null) {
       return null;
     } else {
       Tuple2<int, int> reachedTuple = new Tuple2<int, int>(0, 0);
-      globals.activatedDays[dateTime]?.goals?.forEach(
+      ttt.activatedDays[dateTime]?.goals?.forEach(
         (element) {
           if (element.hasSucceeded == 0) {
             reachedTuple = new Tuple2<int, int>(
@@ -511,7 +512,7 @@ setState(() {
 
   void activeCurrentDay() {
     List<GoalObject> test = new List<GoalObject>();
-    globals.activatedDays.putIfAbsent(
+    ttt.activatedDays.putIfAbsent(
         getCurrentDay(), () => DayObject(title: "titleeeeeeeeeeeeee", description: "discription", goals: test));
   }
 

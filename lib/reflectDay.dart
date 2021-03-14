@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:dailygoals_app/globals.dart' as globals;
+import 'package:dailygoals_app/user_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:jiffy/jiffy.dart';
 
@@ -12,7 +15,7 @@ class reflectDay extends StatefulWidget {
 class _reflectDayState extends State<reflectDay> with TickerProviderStateMixin {
   DateTime selectedDay;
   List<TextEditingController> _reflectionNotesController = [];
-
+var ttt = globals.Globals();
   final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
 
   @override
@@ -46,8 +49,8 @@ class _reflectDayState extends State<reflectDay> with TickerProviderStateMixin {
                 style: TextStyle(
                     fontSize: 20, color: Theme.of(context).primaryColor),
               ),
-              globals.activatedDays[selectedDay]?.goals?.length == 0 ||
-                      globals.activatedDays[selectedDay] == null
+              ttt.activatedDays[selectedDay]?.goals?.length == 0 ||
+                      ttt.activatedDays[selectedDay] == null
                   ? Expanded(
                       child: Center(
                       child: Text(
@@ -61,7 +64,7 @@ class _reflectDayState extends State<reflectDay> with TickerProviderStateMixin {
                         child: AnimatedList(
                             key: _listKey,
                             initialItemCount:
-                                globals.activatedDays[selectedDay].goals.length,
+                                ttt.activatedDays[selectedDay].goals.length,
                             itemBuilder: (BuildContext context, int index,
                                     Animation<double> animation) =>
                                 buildGoalsList(
@@ -85,10 +88,10 @@ class _reflectDayState extends State<reflectDay> with TickerProviderStateMixin {
       Animation<double> animation) {
     _reflectionNotesController.add(new TextEditingController());
 
-    if (globals.activatedDays[_selectedDay].goals[index].reflectionNotes !=
+    if (ttt.activatedDays[_selectedDay].goals[index].reflectionNotes !=
         null) {
       _reflectionNotesController[index].text =
-          globals.activatedDays[_selectedDay].goals[index].reflectionNotes;
+          ttt.activatedDays[_selectedDay].goals[index].reflectionNotes;
     }
 
     return new AnimatedContainer(
@@ -117,7 +120,7 @@ class _reflectDayState extends State<reflectDay> with TickerProviderStateMixin {
           child: Column(
             children: [
               Text(
-                globals.activatedDays[_selectedDay].goals[index].title,
+                ttt.activatedDays[_selectedDay].goals[index].title,
                 style: TextStyle(fontSize: 18),
               ),
               SizedBox(
@@ -132,20 +135,23 @@ class _reflectDayState extends State<reflectDay> with TickerProviderStateMixin {
                       onPressed: () {
                         setState(
                           () {
-                            globals.activatedDays[selectedDay].goals[index]
+                            ttt.activatedDays[selectedDay].goals[index]
                                 .hasSucceeded = 1;
                           },
                         );
+                            String saveThisJson = jsonEncode(ttt);
+
+                        UserPreferences().data = saveThisJson;
                       },
                       child: Icon(
                         Icons.check,
-                        color: globals.activatedDays[selectedDay].goals[index]
+                        color: ttt.activatedDays[selectedDay].goals[index]
                                     .hasSucceeded ==
                                 1
                             ? Colors.white
                             : globals.greenColor,
                       ),
-                      color: globals.activatedDays[selectedDay].goals[index]
+                      color: ttt.activatedDays[selectedDay].goals[index]
                                   .hasSucceeded ==
                               1
                           ? globals.greenColor
@@ -157,19 +163,23 @@ class _reflectDayState extends State<reflectDay> with TickerProviderStateMixin {
                     RaisedButton(
                       onPressed: () {
                         setState(() {
-                          globals.activatedDays[selectedDay].goals[index]
+                          ttt.activatedDays[selectedDay].goals[index]
                               .hasSucceeded = 0;
                         });
+
+                        String saveThisJson = jsonEncode(ttt);
+
+                        UserPreferences().data = saveThisJson;
                       },
                       child: Icon(
                         Icons.clear,
-                        color: globals.activatedDays[selectedDay].goals[index]
+                        color: ttt.activatedDays[selectedDay].goals[index]
                                     .hasSucceeded ==
                                 0
                             ? Colors.white
                             : globals.redColor,
                       ),
-                      color: globals.activatedDays[selectedDay].goals[index]
+                      color: ttt.activatedDays[selectedDay].goals[index]
                                   .hasSucceeded ==
                               0
                           ? globals.redColor
@@ -180,9 +190,9 @@ class _reflectDayState extends State<reflectDay> with TickerProviderStateMixin {
                   ],
                 ),
               ),
-              globals.activatedDays[selectedDay].goals[index].hasSucceeded ==
+              ttt.activatedDays[selectedDay].goals[index].hasSucceeded ==
                           1 ||
-                      globals.activatedDays[selectedDay].goals[index]
+                      ttt.activatedDays[selectedDay].goals[index]
                               .hasSucceeded ==
                           0
                   ? Expanded(
@@ -193,8 +203,12 @@ class _reflectDayState extends State<reflectDay> with TickerProviderStateMixin {
                           maxLines: null,
                           controller: _reflectionNotesController[index],
                           onChanged: (text) {
-                            globals.activatedDays[_selectedDay].goals[index]
+                            ttt.activatedDays[_selectedDay].goals[index]
                                 .reflectionNotes = text;
+
+                            String saveThisJson = jsonEncode(ttt);
+
+                            UserPreferences().data = saveThisJson;
                           },
                           decoration: InputDecoration(
                             hintText:
@@ -219,8 +233,8 @@ class _reflectDayState extends State<reflectDay> with TickerProviderStateMixin {
   }
 
   double getCorrectSize(int index) {
-    if (globals.activatedDays[selectedDay].goals[index].hasSucceeded == 1 ||
-        globals.activatedDays[selectedDay].goals[index].hasSucceeded == 0) {
+    if (ttt.activatedDays[selectedDay].goals[index].hasSucceeded == 1 ||
+        ttt.activatedDays[selectedDay].goals[index].hasSucceeded == 0) {
       return 200;
     } else {
       return 90;
