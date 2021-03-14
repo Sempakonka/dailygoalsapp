@@ -227,97 +227,104 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
   Widget build(BuildContext context) {
     final DateTime _selectedDay = ModalRoute.of(context).settings.arguments;
     final String _selectedDayReadable = Jiffy(_selectedDay).format("MMM do");
-
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
+    return Container(
+      decoration: BoxDecoration(
+          image: DecorationImage(
+              image: AssetImage("Assets/background.png"), fit: BoxFit.cover)),
+      child: Scaffold(
         backgroundColor: Colors.transparent,
-        leading: Padding(
-          padding: EdgeInsets.fromLTRB(20, 10, 0, 10),
-          child: TextButton(
-            child: Icon(
-              Icons.arrow_back_ios,
-              color: Colors.white,
-              size: 26,
-            ),
-            onPressed: () {
-              Navigator.pushNamed(context, '/');
-            },
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.resolveWith(
-                      (states) => globals.backgroundButtonBlue),
-              shape: MaterialStateProperty.resolveWith(
-                      (states) => RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  )),
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          leading: Padding(
+            padding: EdgeInsets.fromLTRB(20, 10, 0, 10),
+            child: TextButton(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(3, 0, 0,0),
+                child: Icon(
+                Icons.arrow_back_ios,
+                color: Colors.white,
+                size: 26,
+              ),   ),
+              onPressed: () {
+                Navigator.pushNamed(context, '/');
+              },
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.resolveWith(
+                    (states) => globals.backgroundButtonBlue),
+                shape: MaterialStateProperty.resolveWith(
+                    (states) => RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        )),
+              ),
             ),
           ),
         ),
-      ),
-      body: Center(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.fromLTRB(15, 5.0, 0, 15),
-              child: Text(
-                _selectedDay == getCurrentDay()
-                    ? "Your goals for today"
-                    : "Your goals for $_selectedDayReadable",
-                style: TextStyle(
-                    color: Theme.of(context).primaryColor,
-                    fontSize: 30,
-                    fontWeight: FontWeight.w500),
-                textAlign: TextAlign.left,
+        body: Center(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.fromLTRB(15, 5.0, 0, 35),
+                child: Text(
+                  _selectedDay == getCurrentDay()
+                      ? "Your goals for today"
+                      : "Your goals for $_selectedDayReadable",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 30,
+                      fontWeight: FontWeight.w500),
+                  textAlign: TextAlign.left,
+                ),
               ),
-            ),
-            ttt.activatedDays[_selectedDay].goals.length == 0
-                ? Expanded(
-                    child: Center(
-                    child: Text(
-                      "You have no goals set yet for this day!",
-                      style: TextStyle(color: Theme.of(context).primaryColor),
+              ttt.activatedDays[_selectedDay].goals.length == 0
+                  ? Expanded(
+                      child: Center(
+                      child: Text(
+                        "You have no goals set yet for this day!",
+                        style: TextStyle(color: Theme.of(context).primaryColor),
+                      ),
+                    ))
+                  : Expanded(
+                      child: AnimatedList(
+                          key: _listKey,
+                          initialItemCount:
+                              ttt.activatedDays[_selectedDay].goals.length,
+                          itemBuilder: (BuildContext context, int index,
+                                  Animation<double> animation) =>
+                              buildGoalsList(
+                                  context, index, _selectedDay, animation)),
                     ),
-                  ))
-                : Expanded(
-                    child: AnimatedList(
-                        key: _listKey,
-                        initialItemCount:
-                            ttt.activatedDays[_selectedDay].goals.length,
-                        itemBuilder: (BuildContext context, int index,
-                                Animation<double> animation) =>
-                            buildGoalsList(
-                                context, index, _selectedDay, animation)),
-                  ),
-          ],
+            ],
+          ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: globals.backgroundButtonBlue,
-        label: Text(
-          "Add a goal",
-          style: TextStyle(
-              color: Colors.white,
-              fontSize: Theme.of(context).textTheme.headline6.fontSize),
+        floatingActionButton: FloatingActionButton.extended(
+          backgroundColor: globals.backgroundButtonBlue,
+          label: Text(
+            "Add a goal",
+            style: TextStyle(
+                color: Colors.white,
+                fontSize: Theme.of(context).textTheme.headline6.fontSize),
+          ),
+          onPressed: () {
+            //clearing the text in the dialogue
+            dayDescriptionController.clear();
+            dayTitleController.clear();
+            //opening the dialogue to add a new goal.
+            createGoalConfigDialog(
+                context,
+                new GoalObject(
+                    title: null,
+                    summary: null,
+                    hasDescription: false,
+                    hasSucceeded: 2,
+                    reflectionNotes: null),
+                null,
+                false,
+                true,
+                _selectedDay);
+          },
         ),
-        onPressed: () {
-          //clearing the text in the dialogue
-          dayDescriptionController.clear();
-          dayTitleController.clear();
-          //opening the dialogue to add a new goal.
-          createGoalConfigDialog(
-              context,
-              new GoalObject(
-                  title: null,
-                  summary: null,
-                  hasDescription: false,
-                  hasSucceeded: 2,
-                  reflectionNotes: null),
-              null,
-              false,
-              true,
-              _selectedDay);
-        },
       ),
     );
   }
@@ -329,22 +336,23 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
       sizeFactor: animation,
       child: Container(
         key: ValueKey<int>(index),
-        margin: EdgeInsets.only(left: 9, top: 0, right: 9, bottom: 12),
+        margin: EdgeInsets.only(left: 9, top: 0, right: 9, bottom: 18),
         decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(10),
-                topRight: Radius.circular(10),
-                bottomLeft: Radius.circular(10),
-                bottomRight: Radius.circular(10)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.5),
-                spreadRadius: 1,
-                blurRadius: 2,
-                offset: Offset(0, 2),
-              )
-            ]),
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(10),
+              topRight: Radius.circular(10),
+              bottomLeft: Radius.circular(10),
+              bottomRight: Radius.circular(10)),
+          boxShadow: <BoxShadow>[
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.14),
+              blurRadius: 7,
+              spreadRadius: 6,
+              offset: Offset(0, 0),
+            ),
+          ],
+        ),
         child: ListTile(
           onTap: () {
             //setting the textFields of the input dialogue
@@ -362,7 +370,8 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
                 false,
                 _selectedDay);
           },
-          title: Text(ttt.activatedDays[_selectedDay]?.goals[index]?.title),
+          title: Text(ttt.activatedDays[_selectedDay]?.goals[index]?.title, style: TextStyle(color: globals.darkBlue, fontWeight: FontWeight.bold),),
+          subtitle:     ttt.activatedDays[_selectedDay]?.goals[index]?.summary != "" ?  Text(ttt.activatedDays[_selectedDay]?.goals[index]?.summary, style: TextStyle(color: globals.darkBlue, fontWeight: FontWeight.normal)) : null,
         ),
       ),
     );

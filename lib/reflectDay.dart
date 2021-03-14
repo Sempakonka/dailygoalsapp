@@ -21,10 +21,15 @@ var ttt = globals.Globals();
   @override
   Widget build(BuildContext context) {
     selectedDay = ModalRoute.of(context).settings.arguments;
-    return Scaffold(
+    return Container(
+        decoration: BoxDecoration(
+        image: DecorationImage(
+        image: AssetImage("Assets/background.png"), fit: BoxFit.cover)),
+    child: Scaffold(
+      backgroundColor: Colors.transparent,
       body: Center(
         child: Padding(
-          padding: EdgeInsets.fromLTRB(0, 70, 0, 0),
+          padding: EdgeInsets.fromLTRB(0, 80, 0, 0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             //Center Column contents vertically,
@@ -40,14 +45,14 @@ var ttt = globals.Globals();
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 20,
-                    color: Theme.of(context).primaryColor,
+                    color: Colors.white,
                     fontWeight: FontWeight.bold),
               ),
               Text(
                 "So, did you reach these goals?",
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                    fontSize: 20, color: Theme.of(context).primaryColor),
+                    fontSize: 20, color: Colors.white),
               ),
               ttt.activatedDays[selectedDay]?.goals?.length == 0 ||
                       ttt.activatedDays[selectedDay] == null
@@ -80,8 +85,9 @@ var ttt = globals.Globals();
         onPressed: () {
           Navigator.pushNamed(context, '/');
         },
+        backgroundColor: globals.backgroundButtonBlue,
       ),
-    );
+    )  );
   }
 
   Widget buildGoalsList(BuildContext context, int index, DateTime _selectedDay,
@@ -100,20 +106,20 @@ var ttt = globals.Globals();
       height: getCorrectSize(index),
       margin: EdgeInsets.only(left: 16, top: 0, right: 16, bottom: 12),
       decoration: BoxDecoration(
-          color: Colors.white,
+          color: getCorrectBackgroundColor(index),
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(10),
               topRight: Radius.circular(10),
               bottomLeft: Radius.circular(10),
               bottomRight: Radius.circular(10)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              spreadRadius: 1,
-              blurRadius: 2,
-              offset: Offset(0, 2),
-            )
-          ]),
+        boxShadow: <BoxShadow>[
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.14),
+            blurRadius: 7,
+            spreadRadius: 6,
+            offset: Offset(0, 0),
+          ),
+        ],),
       child: Padding(
         padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
         child: Center(
@@ -121,7 +127,7 @@ var ttt = globals.Globals();
             children: [
               Text(
                 ttt.activatedDays[_selectedDay].goals[index].title,
-                style: TextStyle(fontSize: 18),
+                style: TextStyle(fontSize: 18, color: globals.darkBlue, fontWeight: FontWeight.bold),
               ),
               SizedBox(
                 child: Row(
@@ -211,15 +217,33 @@ var ttt = globals.Globals();
                             UserPreferences().data = saveThisJson;
                           },
                           decoration: InputDecoration(
+
                             hintText:
-                                'So why did you not reach this goal? \n\n',
-                            enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(width: 0.5)),
-                            focusedBorder: OutlineInputBorder(
+
+                            ttt.activatedDays[selectedDay].goals[index].hasSucceeded ==
+                                0 ?
+                                'So why did you not reach this goal? \n\n' :  'Are there any lessons learned while \nachieving this goal? \n',
+
+
+
+
+                            enabledBorder:   ttt.activatedDays[selectedDay].goals[index].hasSucceeded ==
+                                0 ? OutlineInputBorder(
+                                borderSide: BorderSide(width: 0.5, color: globals.darkRed)) : OutlineInputBorder(
+                                borderSide: BorderSide(width: 0.5, color: globals.darkBlue)),
+
+
+
+
+                            focusedBorder:  ttt.activatedDays[selectedDay].goals[index].hasSucceeded ==
+                          0 ? OutlineInputBorder(
                               borderSide: BorderSide(
-                                  width: 2,
-                                  color: Theme.of(context).primaryColor),
-                            ),
+                                  width: 3.2,
+                                   color: globals.darkRed),
+                            ) :  OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  width: 3.2,
+                                  color: globals.darkBlue)),
                           ),
                         ),
                       ),
@@ -240,5 +264,15 @@ var ttt = globals.Globals();
       return 90;
     }
     return null;
+  }
+  
+  Color getCorrectBackgroundColor(int index){
+    if (ttt.activatedDays[selectedDay].goals[index].hasSucceeded == 1){
+      return globals.lightBlue;
+    } else if (ttt.activatedDays[selectedDay].goals[index].hasSucceeded == 0){
+      return globals.lightRed;
+    } else {
+      return Colors.white;
+    }
   }
 }

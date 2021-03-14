@@ -94,7 +94,7 @@ class _HomePageState extends State<HomePage> {
     _positionListener.itemPositions.addListener(() {
       /// currentday + en - markeert de bovengrens en ondergrens
       if (!(_positionListener.itemPositions.value.first.index <
-                  currentDayIndex - 10) &&
+                  currentDayIndex - 5) &&
 
               ///zolang de currentscroll niet boven het maximum zit
               !(_positionListener.itemPositions.value.first.index >
@@ -106,14 +106,14 @@ class _HomePageState extends State<HomePage> {
         if (!(_positionListener.itemPositions.value.first.index >
                 currentDayIndex + 10) &&
             !(_positionListener.itemPositions.value.first.index <
-                currentDayIndex - 10)) {
+                currentDayIndex - 5)) {
           setState(() {
             showUp = false;
             showDown = false;
           });
         }
       } else if (!(_positionListener.itemPositions.value.first.index <
-              currentDayIndex - 11) &&
+              currentDayIndex - 5) &&
           _positionListener.itemPositions.value.first.index >
               currentDayIndex + 11 &&
 
@@ -124,7 +124,7 @@ class _HomePageState extends State<HomePage> {
           showUp = true;
         });
       } else if (_positionListener.itemPositions.value.first.index <
-              currentDayIndex - 11 &&
+              currentDayIndex - 5 &&
           !(_positionListener.itemPositions.value.first.index >
                   currentDayIndex + 11 &&
               !showDown)) {
@@ -166,15 +166,16 @@ class _HomePageState extends State<HomePage> {
               : AppBar(
                   elevation: 0,
                   backgroundColor: Colors.transparent,
-            centerTitle: true,
-            title: Text(
-              "Goals Buddy",
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
+                  centerTitle: true,
+                  title: Text(
+                    "Goals Buddy",
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
+                  ),
 
-            ///TODO: implement about button
-            /*      leading:
+                  ///TODO: implement about button
+                  /*      leading:
                      TextButton(
                       child: Icon(
                         Icons.,
@@ -192,7 +193,6 @@ class _HomePageState extends State<HomePage> {
                                 )),
                       ),
                     ),*/
-
                 ),
           body: Column(
             children: [
@@ -216,26 +216,45 @@ class _HomePageState extends State<HomePage> {
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                    Text(
-                      "You have not set any goals today!",
-                      style: TextStyle(fontSize: 13),
-                    ),
-                    ElevatedButton(
-                      onPressed: null,
-                      style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.resolveWith(
-                              (states) => globals.darkRed),
-                          shape: MaterialStateProperty.resolveWith(
-                          (states) => RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                )),
-                      ),
-                      child: Text(
-                        "Set goals",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    )
-                  ]),
+                        ttt.activatedDays[getCurrentDay()] == null ||
+                                ttt.activatedDays[getCurrentDay()].goals
+                                        .length ==
+                                    0
+                            ? Text("You have not set any goals today!",
+                                style: TextStyle(fontSize: 13))
+                            : Text(
+                                "You have set ${ttt.activatedDays[getCurrentDay()].goals.length} goals today!",
+                                style: TextStyle(fontSize: 13)),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.pushNamed(
+                                context, DayConfiguratorPage.routeName,
+                                arguments: getCurrentDay());
+                          },
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.resolveWith(
+                                (states) => globals.darkRed),
+                            shape: MaterialStateProperty.resolveWith(
+                                (states) => RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    )),
+                          ),
+                          child:
+                          ttt.activatedDays[getCurrentDay()] == null ||
+                              ttt.activatedDays[getCurrentDay()].goals
+                                  .length ==
+                                  0
+                              ?
+
+                          Text(
+                            "Set Goals",
+                            style: TextStyle(color: Colors.white),
+                          ) :  Text(
+                            "See Them",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        )
+                      ]),
                 ),
               ),
               Expanded(
@@ -269,7 +288,7 @@ class _HomePageState extends State<HomePage> {
                   ? Align(
                       alignment: AlignmentDirectional.bottomStart,
                       child: Container(
-                          height: 75,
+                          height: 84,
                           width: 150,
                           child: Padding(
                             padding: EdgeInsets.fromLTRB(25, 35, 0, 10),
@@ -277,7 +296,7 @@ class _HomePageState extends State<HomePage> {
                               heroTag: "btn2",
                               label: Text("current day",
                                   style: TextStyle(
-                                    color: globals.backgroundButtonBlue,
+                                    color: globals.darkBlue,
                                   )),
                               backgroundColor: Colors.white,
                               icon: Container(
@@ -285,7 +304,7 @@ class _HomePageState extends State<HomePage> {
                                 width: 12,
                                 child: Icon(
                                   Icons.arrow_drop_down_rounded,
-                                  color: globals.lightBlue,
+                                  color: globals.darkBlue,
                                   size: 28,
                                 ),
                               ),
@@ -302,8 +321,10 @@ class _HomePageState extends State<HomePage> {
               showUp
                   ? Align(
                       alignment: AlignmentDirectional.topStart,
-                      child: Container(
-                          height: 75,
+                      child:Padding(
+                        padding: EdgeInsets.fromLTRB(0, 40, 0, 0),
+                        child: Container(
+                          height: 83,
                           width: 150,
                           child: Padding(
                             padding: EdgeInsets.fromLTRB(25, 45, 0, 0),
@@ -311,7 +332,7 @@ class _HomePageState extends State<HomePage> {
                               heroTag: "btn3",
                               label: Text("current day",
                                   style: TextStyle(
-                                    color: globals.backgroundButtonBlue,
+                                    color: globals.darkBlue,
                                   )),
                               backgroundColor: Colors.white,
                               icon: Container(
@@ -319,7 +340,7 @@ class _HomePageState extends State<HomePage> {
                                 width: 12,
                                 child: Icon(
                                   Icons.arrow_drop_up_rounded,
-                                  color: globals.lightBlue,
+                                  color: globals.darkBlue,
                                   size: 28,
                                 ),
                               ),
@@ -331,7 +352,7 @@ class _HomePageState extends State<HomePage> {
                               },
                             ),
                           )),
-                    )
+                    ))
                   : Container(),
             ],
           ),

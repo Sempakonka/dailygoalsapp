@@ -50,7 +50,7 @@ Color lightRed = new Color.fromARGB(255, 255, 198, 197);
 Color darkRed = new Color.fromARGB(255, 254, 139, 136);
 Color darkBlue = new Color.fromARGB(255, 11, 20, 137);
 Color backgroundButtonBlue = new Color.fromARGB(255, 157, 176, 242);
-Color lightBlue = new Color.fromARGB(255, 219, 226, 246);
+Color lightBlue = new Color.fromARGB(255, 237, 242, 255);
 Color grey = new Color.fromARGB(255, 50, 45, 56);
 Color green = new Color.fromARGB(255, 97, 201, 168);
 
