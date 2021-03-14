@@ -37,7 +37,7 @@ class _ReflectState extends State<Reflect> {
                   fontWeight: FontWeight.bold),
             ),
             RaisedButton(
-                color: globals.buttonColor,
+                color: globals.backgroundButtonBlue,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(22.0),
                 ),
@@ -52,7 +52,7 @@ class _ReflectState extends State<Reflect> {
                   Navigator.pushNamed(context, reflectDay.routeName, arguments: utils.getCurrentDay());
                 }),
             RaisedButton(
-                color: globals.buttonColor,
+                color: globals.backgroundButtonBlue,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(22.0),
                 ),
@@ -67,7 +67,7 @@ class _ReflectState extends State<Reflect> {
                   Navigator.pushNamed(context, reflectDay.routeName, arguments: new DateTime(utils.getCurrentDay().year, utils.getCurrentDay().month, utils.getCurrentDay().day - 1));
                 }),
             RaisedButton(
-                color: globals.buttonColor,
+                color: globals.backgroundButtonBlue,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(22.0),
                 ),

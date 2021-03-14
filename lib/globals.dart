@@ -46,6 +46,11 @@ class Globals {
       {'activatedDays': jsonEncode(toJsonSerializableObject(activatedDays))};
 }
 
-Color greenColor = new Color.fromARGB(255, 8, 217, 102);
-Color redColor = new Color.fromARGB(255, 240, 100, 73);
-Color buttonColor = new Color.fromARGB(255, 0, 180, 216);
+Color lightRed = new Color.fromARGB(255, 206, 163, 171);
+Color darkRed = new Color.fromARGB(255, 240, 80, 79);
+Color darkBlue = new Color.fromARGB(255, 11, 20, 137);
+Color backgroundButtonBlue = new Color.fromARGB(255, 157, 176, 242);
+Color lightBlue = new Color.fromARGB(255, 219, 226, 246);
+Color grey = new Color.fromARGB(255, 50, 45, 56);
+
+

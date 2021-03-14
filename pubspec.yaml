@@ -33,6 +33,8 @@ dev_dependencies:
 
 # The following section is specific to Flutter.
 flutter:
+  assets:
+    - Assets/background.png
   uses-material-design: true
   fonts:
     - family: Nunito

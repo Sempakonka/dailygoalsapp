@@ -70,7 +70,7 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
                   SizedBox(height: 10),
                   if (!goal.hasDescription)
                     FlatButton(
-                        color: globals.buttonColor,
+                        color: globals.backgroundButtonBlue,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(22.0),
                         ),
@@ -147,7 +147,7 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
                                     .textTheme
                                     .headline6
                                     .fontSize,
-                                color: globals.redColor)),
+                                color: globals.darkRed)),
                       ),
                     )
                   : Container(),
@@ -279,7 +279,7 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: globals.buttonColor,
+        backgroundColor: globals.backgroundButtonBlue,
         label: Text(
           "Add a goal",
           style: TextStyle(

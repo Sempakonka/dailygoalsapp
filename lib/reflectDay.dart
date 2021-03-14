@@ -149,15 +149,15 @@ var ttt = globals.Globals();
                                     .hasSucceeded ==
                                 1
                             ? Colors.white
-                            : globals.greenColor,
+                            : globals.backgroundButtonBlue,
                       ),
                       color: ttt.activatedDays[selectedDay].goals[index]
                                   .hasSucceeded ==
                               1
-                          ? globals.greenColor
+                          ? globals.backgroundButtonBlue
                           : Colors.white,
                       shape: CircleBorder(
-                        side: BorderSide(color: globals.greenColor),
+                        side: BorderSide(color: globals.backgroundButtonBlue),
                       ),
                     ),
                     RaisedButton(
@@ -177,15 +177,15 @@ var ttt = globals.Globals();
                                     .hasSucceeded ==
                                 0
                             ? Colors.white
-                            : globals.redColor,
+                            : globals.darkRed,
                       ),
                       color: ttt.activatedDays[selectedDay].goals[index]
                                   .hasSucceeded ==
                               0
-                          ? globals.redColor
+                          ? globals.darkRed
                           : Colors.white,
                       shape: CircleBorder(
-                          side: BorderSide(color: globals.redColor)),
+                          side: BorderSide(color: globals.darkRed)),
                     ),
                   ],
                 ),
