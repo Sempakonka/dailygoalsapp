@@ -1,17 +1,31 @@
-# Check out https://docs.codemagic.io/getting-started/building-a-native-ios-app/ for more information
-# Please review and update values in curly braces
-
 workflows:
-    ios-app:
-        name: iOS App
+    my-workflow:
+        name: My workflow name
+        instance_type: mac_mini
+        max_build_duration: 60
         environment:
             vars:
-                XCODE_WORKSPACE: Runner.xcworkspace
-                XCODE_SCHEME: Runner
+                PUBLIC_ENV_VAR: "value here"
+            flutter: stable
             xcode: latest
-            cocoapods: default
+        cache:
+            cache_paths:
+                - ~/.pub-cache
+        triggering:
+            events:
+                - push
+            branch_patterns:
+                - pattern: '*'
+                  include: true
+                  source: true
+            cancel_previous_builds: false
         scripts:
-            - xcodebuild build -workspace "$XCODE_WORKSPACE.xcworkspace" -scheme "$XCODE_SCHEME" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+            - ...
         artifacts:
-            - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.app
-            - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.dSYM
+            - build/**/outputs/**/*.aab
+        publishing:
+            email:
+                recipients:
+                    - name@example.com
+            scripts:
+                - echo 'Post-publish script'
