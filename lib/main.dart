@@ -58,10 +58,10 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     ///We get the string containing Json
     data = UserPreferences().data;
-if(data.isNotEmpty) {
-  Map activatedDaysMap = jsonDecode(data);
-  ttt = ttt.fromJson(activatedDaysMap);
-}
+    if (data.isNotEmpty) {
+      Map activatedDaysMap = jsonDecode(data);
+      ttt = ttt.fromJson(activatedDaysMap);
+    }
     super.initState();
   }
 
@@ -228,6 +228,16 @@ if(data.isNotEmpty) {
                                 style: TextStyle(fontSize: 13)),
                         ElevatedButton(
                           onPressed: () {
+                            if (ttt.activatedDays[getCurrentDay()] == null) {
+                              List<GoalObject> test = new List<GoalObject>();
+                              ttt.activatedDays.putIfAbsent(
+                                  getCurrentDay(),
+                                  () => DayObject(
+                                      title: "title",
+                                      description: "discription",
+                                      goals: test));
+                            }
+
                             Navigator.pushNamed(
                                 context, DayConfiguratorPage.routeName,
                                 arguments: getCurrentDay());
@@ -240,20 +250,18 @@ if(data.isNotEmpty) {
                                       borderRadius: BorderRadius.circular(12),
                                     )),
                           ),
-                          child:
-                          ttt.activatedDays[getCurrentDay()] == null ||
-                              ttt.activatedDays[getCurrentDay()].goals
-                                  .length ==
-                                  0
-                              ?
-
-                          Text(
-                            "Set Goals",
-                            style: TextStyle(color: Colors.white),
-                          ) :  Text(
-                            "See Them",
-                            style: TextStyle(color: Colors.white),
-                          ),
+                          child: ttt.activatedDays[getCurrentDay()] == null ||
+                                  ttt.activatedDays[getCurrentDay()].goals
+                                          .length ==
+                                      0
+                              ? Text(
+                                  "Set Goals",
+                                  style: TextStyle(color: Colors.white),
+                                )
+                              : Text(
+                                  "See Them",
+                                  style: TextStyle(color: Colors.white),
+                                ),
                         )
                       ]),
                 ),
@@ -322,38 +330,38 @@ if(data.isNotEmpty) {
               showUp
                   ? Align(
                       alignment: AlignmentDirectional.topStart,
-                      child:Padding(
+                      child: Padding(
                         padding: EdgeInsets.fromLTRB(0, 40, 0, 0),
                         child: Container(
-                          height: 83,
-                          width: 150,
-                          child: Padding(
-                            padding: EdgeInsets.fromLTRB(25, 45, 0, 0),
-                            child: FloatingActionButton.extended(
-                              heroTag: "btn3",
-                              label: Text("current day",
-                                  style: TextStyle(
+                            height: 83,
+                            width: 150,
+                            child: Padding(
+                              padding: EdgeInsets.fromLTRB(25, 45, 0, 0),
+                              child: FloatingActionButton.extended(
+                                heroTag: "btn3",
+                                label: Text("current day",
+                                    style: TextStyle(
+                                      color: globals.darkBlue,
+                                    )),
+                                backgroundColor: Colors.white,
+                                icon: Container(
+                                  height: 25,
+                                  width: 12,
+                                  child: Icon(
+                                    Icons.arrow_drop_up_rounded,
                                     color: globals.darkBlue,
-                                  )),
-                              backgroundColor: Colors.white,
-                              icon: Container(
-                                height: 25,
-                                width: 12,
-                                child: Icon(
-                                  Icons.arrow_drop_up_rounded,
-                                  color: globals.darkBlue,
-                                  size: 28,
+                                    size: 28,
+                                  ),
                                 ),
+                                onPressed: () {
+                                  _scrollController.scrollTo(
+                                      index: currentDayIndex,
+                                      duration: Duration(milliseconds: 1000),
+                                      curve: Curves.easeInOutCubic);
+                                },
                               ),
-                              onPressed: () {
-                                _scrollController.scrollTo(
-                                    index: currentDayIndex,
-                                    duration: Duration(milliseconds: 1000),
-                                    curve: Curves.easeInOutCubic);
-                              },
-                            ),
-                          )),
-                    ))
+                            )),
+                      ))
                   : Container(),
             ],
           ),
@@ -400,7 +408,7 @@ if(data.isNotEmpty) {
             height: goalsReflectedOn == null ||
                     (goalsReflectedOn.item1 == 0 && goalsReflectedOn.item2 == 0)
                 ? 80
-                : 105,
+                : 95,
             child: Row(
               children: [
                 /// The row containing the left section of the card and the card itself.
@@ -515,7 +523,7 @@ if(data.isNotEmpty) {
                               ttt.activatedDays.putIfAbsent(
                                   onClickDate,
                                   () => DayObject(
-                                      title: "titleeeeeeeeeeeeee",
+                                      title: "title",
                                       description: "discription",
                                       goals: test));
                             }
