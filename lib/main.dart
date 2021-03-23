@@ -58,9 +58,10 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     ///We get the string containing Json
     data = UserPreferences().data;
-
-    Map activatedDaysMap = jsonDecode(data);
-    ttt = ttt.fromJson(activatedDaysMap);
+if(data.isNotEmpty) {
+  Map activatedDaysMap = jsonDecode(data);
+  ttt = ttt.fromJson(activatedDaysMap);
+}
     super.initState();
   }
 
