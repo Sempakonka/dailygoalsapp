@@ -63,7 +63,8 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
                         children: [
                           Icon(Icons.error, color: globals.darkRed, size: 14),
                           Text("  The title field seems to be empty!",
-                              style: TextStyle(color: globals.darkRed, fontSize: 13))
+                              style: TextStyle(
+                                  color: globals.darkRed, fontSize: 13))
                         ],
                       ),
                     ),
@@ -112,9 +113,10 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
                       padding: EdgeInsets.fromLTRB(0, 3, 0, 0),
                       child: Row(
                         children: [
-                          Icon(Icons.error, color:globals.darkRed, size: 14),
+                          Icon(Icons.error, color: globals.darkRed, size: 14),
                           Text("  The description field seems to be empty!",
-                              style: TextStyle(color: globals.darkRed, fontSize: 13))
+                              style: TextStyle(
+                                  color: globals.darkRed, fontSize: 13))
                         ],
                       ),
                     ),
@@ -216,7 +218,10 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
                     },
                     elevation: 5.0,
                     child: Text("submit",
-                        style: TextStyle(fontSize: Theme.of(context).textTheme.headline6.fontSize, color: globals.green))),
+                        style: TextStyle(
+                            fontSize:
+                                Theme.of(context).textTheme.headline6.fontSize,
+                            color: globals.green))),
               ),
             ],
           );
@@ -240,12 +245,13 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
             padding: EdgeInsets.fromLTRB(20, 10, 0, 10),
             child: TextButton(
               child: Padding(
-                padding: EdgeInsets.fromLTRB(3, 0, 0,0),
+                padding: EdgeInsets.fromLTRB(4, 0, 0, 10),
                 child: Icon(
-                Icons.arrow_back_ios,
-                color: Colors.white,
-                size: 26,
-              ),   ),
+                  Icons.arrow_back_ios,
+                  color: Colors.white,
+                  size: 20,
+                ),
+              ),
               onPressed: () {
                 Navigator.pushNamed(context, '/');
               },
@@ -370,8 +376,16 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
                 false,
                 _selectedDay);
           },
-          title: Text(ttt.activatedDays[_selectedDay]?.goals[index]?.title, style: TextStyle(color: globals.darkBlue, fontWeight: FontWeight.bold),),
-          subtitle:     ttt.activatedDays[_selectedDay]?.goals[index]?.summary != "" ?  Text(ttt.activatedDays[_selectedDay]?.goals[index]?.summary, style: TextStyle(color: globals.darkBlue, fontWeight: FontWeight.normal)) : null,
+          title: Text(
+            ttt.activatedDays[_selectedDay]?.goals[index]?.title,
+            style:
+                TextStyle(color: globals.darkBlue, fontWeight: FontWeight.bold),
+          ),
+          subtitle: ttt.activatedDays[_selectedDay]?.goals[index]?.summary != ""
+              ? Text(ttt.activatedDays[_selectedDay]?.goals[index]?.summary,
+                  style: TextStyle(
+                      color: globals.darkBlue, fontWeight: FontWeight.normal))
+              : null,
         ),
       ),
     );

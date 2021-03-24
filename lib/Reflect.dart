@@ -22,11 +22,11 @@ class _ReflectState extends State<Reflect> {
           padding: EdgeInsets.fromLTRB(20, 10, 0, 10),
           child: TextButton(
             child: Padding(
-              padding: EdgeInsets.fromLTRB(3, 0, 0, 0),
+              padding: EdgeInsets.fromLTRB(4, 0, 0, 10),
               child: Icon(
                 Icons.arrow_back_ios,
                 color: Colors.white,
-                size: 26,
+                size: 20,
               ),
             ),
             onPressed: () {

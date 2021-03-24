@@ -298,21 +298,22 @@ class _HomePageState extends State<HomePage> {
                       alignment: AlignmentDirectional.bottomStart,
                       child: Container(
                           height: 84,
-                          width: 150,
+                          width: 130,
                           child: Padding(
                             padding: EdgeInsets.fromLTRB(25, 35, 0, 10),
                             child: FloatingActionButton.extended(
                               heroTag: "btn2",
-                              label: Text("current day",
+                              label: Text("Today",
                                   style: TextStyle(
                                     color: globals.darkBlue,
+
                                   )),
                               backgroundColor: Colors.white,
-                              icon: Container(
+                              icon:  Container(
                                 height: 25,
-                                width: 12,
+                                width: 25,
                                 child: Icon(
-                                  Icons.arrow_drop_down_rounded,
+                                  Icons.arrow_circle_down,
                                   color: globals.darkBlue,
                                   size: 28,
                                 ),
@@ -334,21 +335,21 @@ class _HomePageState extends State<HomePage> {
                         padding: EdgeInsets.fromLTRB(0, 40, 0, 0),
                         child: Container(
                             height: 83,
-                            width: 150,
+                            width: 130,
                             child: Padding(
                               padding: EdgeInsets.fromLTRB(25, 45, 0, 0),
                               child: FloatingActionButton.extended(
                                 heroTag: "btn3",
-                                label: Text("current day",
+                                label: Text("Today",
                                     style: TextStyle(
                                       color: globals.darkBlue,
                                     )),
                                 backgroundColor: Colors.white,
                                 icon: Container(
                                   height: 25,
-                                  width: 12,
+                                  width: 25,
                                   child: Icon(
-                                    Icons.arrow_drop_up_rounded,
+                                    Icons.arrow_circle_up,
                                     color: globals.darkBlue,
                                     size: 28,
                                   ),
@@ -426,7 +427,7 @@ class _HomePageState extends State<HomePage> {
                             /// The info text that marks which day today is
                             onClickDate == getCurrentDay()
                                 ? Padding(
-                                    padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                                    padding: EdgeInsets.fromLTRB(10, 12, 0, 0),
                                     child: Text(
                                       "Today",
                                       style: TextStyle(
