@@ -38,7 +38,7 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
               style: Theme.of(context).textTheme.headline5,
             ),
             content: Container(
-              width: MediaQuery.of(context).size.width / 1.2,
+              width: MediaQuery.of(context).size.width / 1.4,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -124,104 +124,121 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
               ),
             ),
             actions: <Widget>[
-              !isNew
-                  ? Padding(
-                      padding: EdgeInsets.fromLTRB(0, 0, 4, 0),
-                      child: MaterialButton(
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+
+                  !isNew
+                      ? Padding(
+                          padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              ttt.activatedDays[_selectedDay].goals
+                                  .removeAt(index);
+                              _listKey.currentState.removeItem(
+                                index,
+                                (context, animation) => buildGoalsList(
+                                    context, index, _selectedDay, animation),
+                              );
+                              setState(() {
+                                Navigator.of(context).pop();
+                              });
+                              String saveThisJson = jsonEncode(ttt);
+
+                              UserPreferences().data = saveThisJson;
+                            },
+                            style: ButtonStyle(elevation: MaterialStateProperty.resolveWith((states) => 5),   shape: MaterialStateProperty.resolveWith(
+                                    (states) => RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20))),  backgroundColor: MaterialStateProperty.resolveWith(
+                                    (states) => globals.lightRed),),
+                            child: Text("delete",
+                                style: TextStyle(
+
+                                    color: Colors.white)),
+                          ),
+                        )
+                      : Container(),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                    child: ElevatedButton(
                         onPressed: () {
-                          ttt.activatedDays[_selectedDay].goals.removeAt(index);
-                          _listKey.currentState.removeItem(
-                            index,
-                            (context, animation) => buildGoalsList(
-                                context, index, _selectedDay, animation),
+                          Navigator.of(context).pop();
+                        },
+
+                        style: ButtonStyle(elevation: MaterialStateProperty.resolveWith((states) => 5),   shape: MaterialStateProperty.resolveWith(
+          (states) => RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20))),  backgroundColor: MaterialStateProperty.resolveWith(
+                                (states) => globals.backgroundButtonBlue),),
+                        child: Text("cancel",
+                            style: TextStyle(color: Colors.white)),
+                  )),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                    child: ElevatedButton(
+                        onPressed: () {
+                          setState(
+                            () {
+                              //  data = UserPreferences().data;
+                              // if user doesn't use a description the textfield will always be valid. If user does, and inputfield is not empty it will also be valid
+                              bool isValidDescription;
+                              if (!goal.hasDescription ||
+                                  dayDescriptionController.text.isNotEmpty) {
+                                isValidDescription = true;
+                              } else {
+                                isValidDescription = false;
+                              }
+
+                              if (dayTitleController.text.isNotEmpty &&
+                                  isValidDescription) {
+                                Navigator.of(context).pop();
+
+                                if (isNew) {
+                                  ttt.activatedDays[_selectedDay].goals.add(
+                                      new GoalObject(
+                                          title: dayTitleController.text,
+                                          summary:
+                                              dayDescriptionController.text,
+                                          hasDescription: goal.hasDescription,
+                                          hasSucceeded: 2,
+                                          reflectionNotes: null));
+                                  _listKey.currentState?.insertItem(ttt
+                                          .activatedDays[_selectedDay]
+                                          .goals
+                                          .length -
+                                      1);
+                                } else {
+                                  ttt.activatedDays[_selectedDay].goals[index] =
+                                      new GoalObject(
+                                          title: dayTitleController.text,
+                                          summary:
+                                              dayDescriptionController.text,
+                                          hasDescription: goal.hasDescription,
+                                          hasSucceeded: 2,
+                                          reflectionNotes: null);
+                                }
+                              } else {
+                                setState(() {
+                                  Navigator.of(context).pop();
+                                  createGoalConfigDialog(context, goal, index,
+                                      true, isNew, _selectedDay);
+                                });
+                              }
+                            },
                           );
-                          setState(() {
-                            Navigator.of(context).pop();
-                          });
                           String saveThisJson = jsonEncode(ttt);
 
                           UserPreferences().data = saveThisJson;
                         },
-                        elevation: 5.0,
-                        child: Text("delete",
+                        style: ButtonStyle(elevation: MaterialStateProperty.resolveWith((states) => 5),   shape: MaterialStateProperty.resolveWith(
+                                (states) => RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20))),  backgroundColor: MaterialStateProperty.resolveWith(
+                                (states) => globals.green),),
+                        child: Text("submit",
                             style: TextStyle(
-                                fontSize: Theme.of(context)
-                                    .textTheme
-                                    .headline6
-                                    .fontSize,
-                                color: globals.darkRed)),
-                      ),
-                    )
-                  : Container(),
-              Padding(
-                padding: EdgeInsets.fromLTRB(0, 0, 4, 0),
-                child: MaterialButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    elevation: 5.0,
-                    child: Text("cancel",
-                        style: Theme.of(context).textTheme.headline6)),
-              ),
-              Padding(
-                padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
-                child: MaterialButton(
-                    onPressed: () {
-                      setState(
-                        () {
-                          //  data = UserPreferences().data;
-                          // if user doesn't use a description the textfield will always be valid. If user does, and inputfield is not empty it will also be valid
-                          bool isValidDescription;
-                          if (!goal.hasDescription ||
-                              dayDescriptionController.text.isNotEmpty) {
-                            isValidDescription = true;
-                          } else {
-                            isValidDescription = false;
-                          }
 
-                          if (dayTitleController.text.isNotEmpty &&
-                              isValidDescription) {
-                            Navigator.of(context).pop();
-
-                            if (isNew) {
-                              ttt.activatedDays[_selectedDay].goals.add(
-                                  new GoalObject(
-                                      title: dayTitleController.text,
-                                      summary: dayDescriptionController.text,
-                                      hasDescription: goal.hasDescription,
-                                      hasSucceeded: 2,
-                                      reflectionNotes: null));
-                              _listKey.currentState?.insertItem(
-                                  ttt.activatedDays[_selectedDay].goals.length -
-                                      1);
-                            } else {
-                              ttt.activatedDays[_selectedDay].goals[index] =
-                                  new GoalObject(
-                                      title: dayTitleController.text,
-                                      summary: dayDescriptionController.text,
-                                      hasDescription: goal.hasDescription,
-                                      hasSucceeded: 2,
-                                      reflectionNotes: null);
-                            }
-                          } else {
-                            setState(() {
-                              Navigator.of(context).pop();
-                              createGoalConfigDialog(context, goal, index, true,
-                                  isNew, _selectedDay);
-                            });
-                          }
-                        },
-                      );
-                      String saveThisJson = jsonEncode(ttt);
-
-                      UserPreferences().data = saveThisJson;
-                    },
-                    elevation: 5.0,
-                    child: Text("submit",
-                        style: TextStyle(
-                            fontSize:
-                                Theme.of(context).textTheme.headline6.fontSize,
-                            color: globals.green))),
+                                color: Colors.white))),
+                  )
+                ],
               ),
             ],
           );

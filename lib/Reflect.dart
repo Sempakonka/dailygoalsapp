@@ -55,6 +55,7 @@ class _ReflectState extends State<Reflect> {
                     fontSize: 22,
                     color: globals.darkBlue,
                     fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
               ),
             ),
             RaisedButton(
