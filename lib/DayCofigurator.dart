@@ -73,7 +73,7 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
                     FlatButton(
                         color: globals.backgroundButtonBlue,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(22.0),
+                          borderRadius: BorderRadius.circular(12.0),
                         ),
                         child: Text(
                           "Also use Description",
@@ -125,7 +125,7 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
             ),
             actions: <Widget>[
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
 
                   !isNew
