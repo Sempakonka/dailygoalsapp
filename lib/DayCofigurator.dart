@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:dailygoals_app/DataTypes/Goal.dart';
 import 'package:dailygoals_app/Utils.dart';
@@ -34,7 +35,7 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(10.0))),
             title: Text(
-              "goal number $goalNumber",
+              "Goal number $goalNumber",
               style: Theme.of(context).textTheme.headline5,
             ),
             content: Container(
@@ -125,12 +126,11 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
             ),
             actions: <Widget>[
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-
                   !isNew
                       ? Padding(
-                          padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                          padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
                           child: ElevatedButton(
                             onPressed: () {
                               ttt.activatedDays[_selectedDay].goals
@@ -147,33 +147,41 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
 
                               UserPreferences().data = saveThisJson;
                             },
-                            style: ButtonStyle(elevation: MaterialStateProperty.resolveWith((states) => 5),   shape: MaterialStateProperty.resolveWith(
-                                    (states) => RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20))),  backgroundColor: MaterialStateProperty.resolveWith(
-                                    (states) => globals.lightRed),),
+                            style: ButtonStyle(
+                              elevation: MaterialStateProperty.resolveWith(
+                                  (states) => 5),
+                              shape: MaterialStateProperty.resolveWith(
+                                  (states) => RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20))),
+                              backgroundColor:
+                                  MaterialStateProperty.resolveWith(
+                                      (states) => globals.lightRed),
+                            ),
                             child: Text("delete",
-                                style: TextStyle(
-
-                                    color: Colors.white)),
+                                style: TextStyle(color: Colors.white)),
                           ),
                         )
                       : Container(),
                   Padding(
-                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                    child: ElevatedButton(
+                      padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                      child: ElevatedButton(
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
-
-                        style: ButtonStyle(elevation: MaterialStateProperty.resolveWith((states) => 5),   shape: MaterialStateProperty.resolveWith(
-          (states) => RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20))),  backgroundColor: MaterialStateProperty.resolveWith(
-                                (states) => globals.backgroundButtonBlue),),
+                        style: ButtonStyle(
+                          elevation:
+                              MaterialStateProperty.resolveWith((states) => 5),
+                          shape: MaterialStateProperty.resolveWith((states) =>
+                              RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20))),
+                          backgroundColor: MaterialStateProperty.resolveWith(
+                              (states) => globals.backgroundButtonBlue),
+                        ),
                         child: Text("cancel",
                             style: TextStyle(color: Colors.white)),
-                  )),
+                      )),
                   Padding(
-                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                    padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
                     child: ElevatedButton(
                         onPressed: () {
                           setState(
@@ -229,14 +237,17 @@ class _DayConfiguratorPageState extends State<DayConfiguratorPage> {
 
                           UserPreferences().data = saveThisJson;
                         },
-                        style: ButtonStyle(elevation: MaterialStateProperty.resolveWith((states) => 5),   shape: MaterialStateProperty.resolveWith(
-                                (states) => RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20))),  backgroundColor: MaterialStateProperty.resolveWith(
-                                (states) => globals.green),),
+                        style: ButtonStyle(
+                          elevation:
+                              MaterialStateProperty.resolveWith((states) => 5),
+                          shape: MaterialStateProperty.resolveWith((states) =>
+                              RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20))),
+                          backgroundColor: MaterialStateProperty.resolveWith(
+                              (states) => globals.green),
+                        ),
                         child: Text("submit",
-                            style: TextStyle(
-
-                                color: Colors.white))),
+                            style: TextStyle(color: Colors.white))),
                   )
                 ],
               ),
